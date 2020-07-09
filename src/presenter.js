@@ -9,9 +9,12 @@ const formatRoll = (roll) => {
         limit,
         target,
         negate,
+        plus, 
+        minus,
+        command
     } = roll;
 
-    return `Result: ${success !== null ? success ? `SUCCESS ` : `FAILURE ` : ''}(${rolls.join(', ')})${successes !== null ? `, Successes: ${successes}` : ''}, Total: ${sum}`;
+    return `${command}:\n\t (${rolls.join(', ')})${plus ? ` +${plus} ` : minus ? ` -${minus} ` :  ''}${successes !== null ? `, Successes: ${successes}` : ''}, Total: ${sum}${target ? ` >= ${target},` : negate ? ` <= ${negate},` : ''}${success !== null ? success ? ` SUCCESS ` : ` FAILURE ` : ''}`;
 }
 
 console.info("Loaded formatRoll function");

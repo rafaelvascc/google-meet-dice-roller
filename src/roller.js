@@ -20,7 +20,8 @@ const rollDice = (dice) => {
         target,
         negate,
         plus,
-        minus
+        minus,
+        command,
     } = dice;
 
     let result = {
@@ -28,10 +29,13 @@ const rollDice = (dice) => {
         successes: null,
         success: null,
         sum: 0,
+        plus,
+        minus,
         difficulty,
         limit,
         target,
         negate,
+        command
     }
 
     for (let i = 0; i < rolls; i++) {
@@ -41,13 +45,13 @@ const rollDice = (dice) => {
 
     if (keepHigher) {
         result.rolls.sort((a, b) => b - a);
-        result.sum = result.rolls.slice(0, keepHigher - 1).reduce((a, b) => {
+        result.sum = result.rolls.slice(0, keepHigher).reduce((a, b) => {
             return a + b;
         }, 0);
     }
     else if (keepLower) {
         result.rolls.sort((a, b) => a - b);
-        result.sum = result.rolls.slice(0, keepLower - 1).reduce((a, b) => {
+        result.sum = result.rolls.slice(0, keepLower).reduce((a, b) => {
             return a + b;
         }, 0);
     }

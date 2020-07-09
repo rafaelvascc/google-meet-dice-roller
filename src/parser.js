@@ -23,12 +23,6 @@ const parseRollCommand = (input) => {
     const diceRegex = /^([+-]*)(\d*)d(\d+)(([hl])(\d+))?(([dm])(\d+))?(([+-])(\d+))?(([tn])(\d+))?$/
     const constRegex = /^([+-])(\d+)$/
 
-    if (!input || !input.startsWith('roll')) {
-        return null;
-    }
-
-    input = input.substring('roll'.length).trim();
-
     if (!input) {
         return null;
     }
@@ -48,13 +42,14 @@ const parseRollCommand = (input) => {
                 target: 0,
                 negate: 0,
                 plus: 0,
-                minus: 0
+                minus: 0,
+                command: token
             };
 
             const matches = diceRegex.exec(token);
 
             for (let i = 1; i <= matches.length; i++) {
-                var subToken = matches[i];
+                const subToken = matches[i];
                 if (subToken) {
                     if (subToken === '-' && i === 1) {
                         dice.subtract = true;
