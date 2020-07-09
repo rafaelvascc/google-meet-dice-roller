@@ -113,6 +113,4 @@ const parseRollCommand = (input) => {
     return result;
 }
 
-console.info("Loaded parseRollCommand function");
-
 //export default parseRollCommand;

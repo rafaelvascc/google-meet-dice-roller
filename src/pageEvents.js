@@ -12,7 +12,7 @@ document.addEventListener("keydown", event => {
                     output += formatRoll(roll) + "\n";
                 }
                 if (cmds.dice.length > 1) {
-                    output += `Total: ${total + cmds.constant}\n`;
+                    output += `Total: ${cmds.constant !== 0 ? (cmds.constant > 0 ? `${total} + ${cmds.constant} = ${total + cmds.constant}` : `${total} - ${cmds.constant * -1} = ${total + cmds.constant}` ): total}\n`;
                 }
                 output += "---------------------------------------------------------------------------"
             }

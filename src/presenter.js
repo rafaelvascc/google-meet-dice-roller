@@ -14,9 +14,7 @@ const formatRoll = (roll) => {
         command
     } = roll;
 
-    return `${command}:\n\t (${rolls.join(', ')})${plus ? ` +${plus} ` : minus ? ` -${minus} ` :  ''}${successes !== null ? `, Successes: ${successes}` : ''}, Total: ${sum}${target ? ` >= ${target},` : negate ? ` <= ${negate},` : ''}${success !== null ? success ? ` SUCCESS ` : ` FAILURE ` : ''}`;
+    return `${command}:\n\t (${rolls.join(', ')})${plus ? ` +${plus} ` : minus ? ` -${minus} ` :  ''}${successes !== null ? ` Successes: ${successes}` : ''} Total: ${sum}${target ? ` >= ${target},` : negate ? ` <= ${negate},` : ''}${success !== null ? success ? ` SUCCESS ` : ` FAILURE ` : ''}`;
 }
-
-console.info("Loaded formatRoll function");
 
 //export default formatRoll;

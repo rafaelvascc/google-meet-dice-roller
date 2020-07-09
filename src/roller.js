@@ -93,6 +93,4 @@ const rollDice = (dice) => {
     return result;
 }
 
-console.info("Loaded rollDice function");
-
 //export default rollDice;
