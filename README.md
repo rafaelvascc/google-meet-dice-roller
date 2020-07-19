@@ -1,5 +1,5 @@
 # Google Meet Dice Roller
-Dice roller chrome extension for RPG players using Google Meets
+Dice roller chrome extension for RPG players using Google Meet
 
 Use the /r or roll command in the chat window's text input box and hit Enter to roll dice (clicking the send message button isn't working at the moment).
 
