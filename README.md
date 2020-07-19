@@ -2,6 +2,7 @@
 Dice roller chrome extension for RPG players using Google Meets
 
 Use the /r or roll command in the chat window's text input box and hit Enter to roll dice (clicking the send message button isn't working at the moment).
+
 Examples:
 
     roll d6                 (rolls one six sided dice, the number of sides can be any positive integer number)
