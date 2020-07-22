@@ -71,7 +71,7 @@ const rollDice = (dice) => {
     }
 
     if (minus) {
-        result.sum += minus;
+        result.sum -= minus;
     }
 
     if (plus) {
@@ -86,7 +86,7 @@ const rollDice = (dice) => {
         result.success = result.sum <= negate;
     }
 
-    if (subtract && result.sum) {
+    if (subtract && result.sum !== 0) {
         result.sum = -result.sum;
     }
 
