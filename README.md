@@ -40,3 +40,10 @@ Examples:
     /r 5d6l2+10t20          (rolls five six sided dice, sums the results of the two lowest values, adds 10, and shows SUCCESS if the sum is equal or lower than 20)
     
     /r 2d6 +3d12 -4d4 +10   (rolls and sums the results of two six sided dice, adds the sum of results of three twelve sided dice, subtracts the sum of result of four four sided dice, then adds 10 to the final result)
+
+# Changelog
+
+## [0.0.0.2] - 2020-07-22
+
+### Changed
+- Fixed subtracting constant value in commands like /r 2d6-1 
