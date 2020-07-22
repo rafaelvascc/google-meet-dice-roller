@@ -1,6 +1,6 @@
 {
     "name": "Google Meet Dice Roller",
-    "version": "0.0.0.1",
+    "version": "0.0.0.2",
     "description": "Dice roller extension for RPG players using Google Meet",
     "manifest_version": 2,
     "icons": {
