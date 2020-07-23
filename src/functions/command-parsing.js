@@ -113,4 +113,4 @@ const parseRollCommand = (input) => {
     return result;
 }
 
-//export default parseRollCommand;
+export default parseRollCommand;

@@ -1,3 +1,7 @@
+import parseRollCommand from './command-parsing';
+import rollDice from './dice-rolling';
+import { formatRoll, formatTotalResult } from './formatting';
+
 const processRollCommand = (input) => {
     let output = "";
     let total = 0;
@@ -15,3 +19,5 @@ const processRollCommand = (input) => {
     }
     return output;
 }
+
+export default processRollCommand;

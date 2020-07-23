@@ -93,4 +93,4 @@ const rollDice = (dice) => {
     return result;
 }
 
-//export default rollDice;
+export default rollDice;
