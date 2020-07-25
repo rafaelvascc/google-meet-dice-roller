@@ -109,7 +109,7 @@ const reactUIConfig = {
         })
     ],
     devServer: {
-        contentBase: path.join(__dirname, BUILD_FOLDER_NAME, 'ui'),
+        contentBase: path.join(__dirname, BUILD_FOLDER_NAME, UI_FOLDER_NAME),
         compress: true,
         port: 9000
     }
@@ -122,8 +122,20 @@ const contentScriptsConfig = {
         path: path.resolve(__dirname, BUILD_CONTENT_SCRIPTS_PATH),
         filename: BUILT_CONTENT_SCRIPT
     },
+    module: {
+        rules: [
+            {
+                test: /\.(js)$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: "babel-loader"
+                }
+            }
+        ]
+    },
     plugins: [
-        new WaitPlugin(BUILT_REACT_UI_JS_PATH),
+        new CleanWebpackPlugin(),
+        //new WaitPlugin(BUILT_REACT_UI_JS_PATH),
         new TransformJson({
             filename: `../manifest.json`,
             source: './src/chrome-specific/manifest.json',
@@ -144,43 +156,6 @@ const contentScriptsConfig = {
         new CopyPlugin({
             patterns: [
                 { from: './assets/icons', to: '../icons' }
-            ],
-            options: {
-                concurrency: 100,
-            },
-        }),
-    ],
-};
-
-const assetsConfig = {
-    mode: "production",
-    //entry: './src/content-scripts/index.js',
-    output: {
-        path: path.resolve(__dirname, BUILD_PATH),
-        //filename: BUILT_CONTENT_SCRIPT
-    },
-    plugins: [
-        new WaitPlugin(BUILT_REACT_UI_JS_PATH),
-        new TransformJson({
-            filename: `manifest.json`,
-            source: './src/chrome-specific/manifest.json',
-            object: {
-                version: PACKAGE.version,
-                content_scripts: [
-                    {
-                        matches: [
-                            "https://meet.google.com/*"
-                        ],
-                        js: [
-                            BUILT_CONTENT_SCRIPT_RELATIVE_TO_MANIFEST
-                        ]
-                    }
-                ]
-            }
-        }),
-        new CopyPlugin({
-            patterns: [
-                { from: './assets/icons', to: 'icons' }
             ],
             options: {
                 concurrency: 100,
