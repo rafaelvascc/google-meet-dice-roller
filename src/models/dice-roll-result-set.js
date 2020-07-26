@@ -57,7 +57,7 @@ class DiceRollResultSet {
     /**
      * Formats this object's dice rolling result into a string for presentation to the user.
      * 
-     * @returns {String} The string used to present this object's results to the used.
+     * @returns {String} The string used to present this object's results to the user.
      */
     asPresentationString = () => {
         let output = "";

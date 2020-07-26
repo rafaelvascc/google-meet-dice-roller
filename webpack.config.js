@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const HtmlWebPackPlugin = require("html-webpack-plugin");
+const HtmlWebPackPlugin = require('html-webpack-plugin');
 const TransformJson = require('transform-json-webpack-plugin');
 const WebpackBeforeBuildPlugin = require('before-build-webpack')
 var PACKAGE = require('./package.json');
@@ -13,12 +13,14 @@ const BUILD_FOLDER_NAME = 'build';
 const DIST_FOLDER_NAME = 'dist';
 const CONTENT_SCRIPTS_FOLDER_NAME = 'content-scripts'
 const UI_FOLDER_NAME = 'ui'
+const BUILD_UI_INDEX_HTML_FILE = 'index.html';
 const BUILT_CONTENT_SCRIPT = 'index.js';
 const BUILT_REACT_UI_JS = `ui-${Date.now()}.js`;
 const BUILD_PATH = `./${BUILD_FOLDER_NAME}`;
 const DIST_PATH = `./${DIST_FOLDER_NAME}`;
 const BUILD_CONTENT_SCRIPTS_PATH = `${BUILD_PATH}/${CONTENT_SCRIPTS_FOLDER_NAME}`;
 const BUILD_UI_PATH = `${BUILD_PATH}/${UI_FOLDER_NAME}`;
+const BUILD_UI_INDEX_HTML_FILE_RELATIVE_TO_MANIFEST = `${UI_FOLDER_NAME}/${BUILD_UI_INDEX_HTML_FILE}`;
 const BUILT_CONTENT_SCRIPT_RELATIVE_TO_MANIFEST = `${CONTENT_SCRIPTS_FOLDER_NAME}/${BUILT_CONTENT_SCRIPT}`;
 const BUILT_REACT_UI_JS_PATH = `${BUILD_UI_PATH}/${BUILT_REACT_UI_JS}`
 
@@ -32,7 +34,7 @@ class WaitPlugin extends WebpackBeforeBuildPlugin {
                 if (fs.existsSync(file)) {
                     callback()
                 } else if (Date.now() - start > timeout) {
-                    throw Error("Maybe it just wasn't meant to be.")
+                    throw Error('Maybe it just wasn\'t meant to be.')
                 } else {
                     setTimeout(poll, interval)
                 }
@@ -44,7 +46,7 @@ class WaitPlugin extends WebpackBeforeBuildPlugin {
 }
 
 const reactUIConfig = {
-    mode: "production",
+    mode: 'production',
     entry: './src/ui/index.jsx',
     output: {
         path: path.resolve(__dirname, BUILD_UI_PATH),
@@ -56,13 +58,13 @@ const reactUIConfig = {
                 test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
                 use: {
-                    loader: "babel-loader"
+                    loader: 'babel-loader'
                 }
             },
             {
                 test: /\.html$/,
                 use: {
-                    loader: "html-loader"
+                    loader: 'html-loader'
                 }
             },
             {
@@ -104,8 +106,8 @@ const reactUIConfig = {
     plugins: [
         new CleanWebpackPlugin(),
         new HtmlWebPackPlugin({
-            template: "./src/ui/index.html",
-            filename: "index.html",
+            template: './src/ui/index.html',
+            filename: BUILD_UI_INDEX_HTML_FILE,
         })
     ],
     devServer: {
@@ -116,7 +118,7 @@ const reactUIConfig = {
 }
 
 const contentScriptsConfig = {
-    mode: "production",
+    mode: 'production',
     entry: './src/content-scripts/index.js',
     output: {
         path: path.resolve(__dirname, BUILD_CONTENT_SCRIPTS_PATH),
@@ -128,7 +130,7 @@ const contentScriptsConfig = {
                 test: /\.(js)$/,
                 exclude: /node_modules/,
                 use: {
-                    loader: "babel-loader"
+                    loader: 'babel-loader'
                 }
             }
         ]
@@ -141,10 +143,14 @@ const contentScriptsConfig = {
             source: './src/chrome-specific/manifest.json',
             object: {
                 version: PACKAGE.version,
+                browser_action: {
+                    default_icon: 'icons/128.png',
+                    default_popup: BUILD_UI_INDEX_HTML_FILE_RELATIVE_TO_MANIFEST
+                },
                 content_scripts: [
                     {
                         matches: [
-                            "https://meet.google.com/*"
+                            'https://meet.google.com/*'
                         ],
                         js: [
                             BUILT_CONTENT_SCRIPT_RELATIVE_TO_MANIFEST
