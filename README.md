@@ -1,9 +1,15 @@
 # Google Meet Dice Roller
-Dice roller chrome extension for RPG players using Google Meet
+Dice roller extension for RPG players using Google Meet on Google Chrome or Microsoft Edge (Heyyyy!!! It works!)
 
-Use the /r or roll command in the chat window's text input box and hit Enter to roll dice (clicking the send message button isn't working at the moment).
+If you're seeing this page, probably the Google Meet Dice Roller extension was just updated... Better read these docs to keep up with changes.
 
-Examples:
+## Basic Usage
+
+In Google Meet's chat window's text input, use the **/r** or **roll** commands and hit **Enter** to roll dice.
+
+![basic_usage_1](./docs/basic_usage_1.gif)
+
+#### Command Examples:
 
     roll d6                 (rolls one six sided dice, the number of sides can be any positive integer number)
     
@@ -16,6 +22,8 @@ Examples:
     /r 5d6+10               (rolls five six sided dice, sums the results and adds 10)
     
     /r 5d6-10               (rolls five six sided dice, sums the results and subtracts 10)
+
+    /r 5d6*10               (rolls five six sided dice, sums the results then multiplies the result by 10)
     
     /r 5d6h2                (rolls five six sided dice and sums the results of the two highest values. "h" stands for "Highest")
     
@@ -41,9 +49,57 @@ Examples:
     
     /r 2d6 +3d12 -4d4 +10   (rolls and sums the results of two six sided dice, adds the sum of results of three twelve sided dice, subtracts the sum of result of four four sided dice, then adds 10 to the final result)
 
+You can type any positive integer for the dice "faces". You can use the traditionals **d2, d4, d6, d8, d10, d12, d20, d100** or just funcky stuff like **d37, d23, d145, ETC...**
+
+#### Command Regular Expression
+Here is the regular expresion used to validate commands if you're curious...
+```javascript
+/^((([+-]*)(\d*)d(\d+)(([hl])(\d+))?(([dm])(\d+))?(([\*+-])(\d+))?(([tn])(\d+))?)|\s|(([+-])(\d+)))+$/
+```
+## User Interface
+
+You can create a **collection** of **dice roll sets** on the user interface. Each set has a **name**, and **the set name should be unique** among the sets in your collection.
+
+Dice roll sets can have many **dice roll commands**. Commands in a set have a **label** that also **should be unique** among commands in the same set. Commands in the dice roll set should be **valid commands** like the ones in the *Command Examples* section above, **without** the **/r** or **roll** parts.
+
+![ui_1](./docs/ui_1.gif)
+
+You can **delete a dice roll set** from your collection using the **"red/minus" delete button**. You can also **delete a dice roll command** from it's set using the **"red/minus" delete button**. A pop up will apear for confirming or canceling deletion on both cases.
+
+You can **edit** a dice roll command using the **green/edit button**. While editing a dice roll command, other buttons will apear for confirming or canceling the changes.
+
+## Using saved dice roll commands
+
+A saved dice roll command can be used in two ways:
+- In Google Meet's chat window's text input by typing  **/r** or **roll** followed by **{set name}.{command label}**. So to roll the *attack* command of the *barbarian* set, type **/r barbarian.attack**
+
+![using_saved_1](./docs/using_saved_1.gif)
+
+- Simply use the blue "**roll dice button**" besides the commands while **Google Meet is the active tab**.
+
+![using_saved_2](./docs/using_saved_2.gif)
+
+Probably you've noticed that **the idea is for a dice set to represent a character and the command in the dice set to represent the character's actions**.
+
+## Help and Donations
+On the UI"s header there are two additional buttons/links, **Donate** and **Help**.
+
+If you're feeling generous, you send me money for a coffee using the **Donate button**. If you're feeling REALLY generous, you can send me enough for a RTX 3080. :grin:
+
+The help button opens a new tab for this README.md file.
+
 # Changelog
+
+## [1.0.0] - 2021-05-23
+
+### Added
+- Added user interface for creating dice roll sets
+- Added "multiply" option to dice roll calculations 
+
+### Changed
+- Better docs
 
 ## [0.0.0.2] - 2020-07-22
 
-### Changed
+### Fixes
 - Fixed subtracting constant value in commands like /r 2d6-1 
