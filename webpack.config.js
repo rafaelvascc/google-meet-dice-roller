@@ -1,53 +1,29 @@
-const fs = require('fs');
 const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const TransformJson = require('transform-json-webpack-plugin');
-const WebpackBeforeBuildPlugin = require('before-build-webpack')
 var PACKAGE = require('./package.json');
 const postcssNormalize = require('postcss-normalize');
-const rimraf = require('rimraf');
 
 const BUILD_FOLDER_NAME = 'build';
-const DIST_FOLDER_NAME = 'dist';
 const CONTENT_SCRIPTS_FOLDER_NAME = 'content-scripts'
 const UI_FOLDER_NAME = 'ui'
 const BUILD_UI_INDEX_HTML_FILE = 'index.html';
 const BUILT_CONTENT_SCRIPT = 'index.js';
-const BUILT_REACT_UI_JS = `ui-${Date.now()}.js`;
+const BUILT_REACT_UI_JS = `index.js`;
 const BUILD_PATH = `./${BUILD_FOLDER_NAME}`;
-const DIST_PATH = `./${DIST_FOLDER_NAME}`;
 const BUILD_CONTENT_SCRIPTS_PATH = `${BUILD_PATH}/${CONTENT_SCRIPTS_FOLDER_NAME}`;
 const BUILD_UI_PATH = `${BUILD_PATH}/${UI_FOLDER_NAME}`;
 const BUILD_UI_INDEX_HTML_FILE_RELATIVE_TO_MANIFEST = `${UI_FOLDER_NAME}/${BUILD_UI_INDEX_HTML_FILE}`;
 const BUILT_CONTENT_SCRIPT_RELATIVE_TO_MANIFEST = `${CONTENT_SCRIPTS_FOLDER_NAME}/${BUILT_CONTENT_SCRIPT}`;
-const BUILT_REACT_UI_JS_PATH = `${BUILD_UI_PATH}/${BUILT_REACT_UI_JS}`
-
-//https://github.com/webpack/webpack/issues/3838
-class WaitPlugin extends WebpackBeforeBuildPlugin {
-    constructor(file, interval = 100, timeout = 100000) {
-        super(function (stats, callback) {
-            let start = Date.now()
-
-            function poll() {
-                if (fs.existsSync(file)) {
-                    callback()
-                } else if (Date.now() - start > timeout) {
-                    throw Error('Maybe it just wasn\'t meant to be.')
-                } else {
-                    setTimeout(poll, interval)
-                }
-            }
-
-            poll()
-        })
-    }
-}
 
 const reactUIConfig = {
-    mode: 'production',
+    target: "web",
+    mode: 'development',
     entry: './src/ui/index.jsx',
+    devtool: 'source-map',
+    watch: true,
     output: {
         path: path.resolve(__dirname, BUILD_UI_PATH),
         filename: BUILT_REACT_UI_JS
@@ -103,16 +79,19 @@ const reactUIConfig = {
             }
         ]
     },
-    plugins: [
-        new CleanWebpackPlugin(),
+    plugins: [        
+        // new CleanWebpackPlugin({
+        //     verbose: true
+        // }),
         new HtmlWebPackPlugin({
             template: './src/ui/index.html',
             filename: BUILD_UI_INDEX_HTML_FILE,
         })
     ],
     devServer: {
-        contentBase: path.join(__dirname, BUILD_FOLDER_NAME, UI_FOLDER_NAME),
-        compress: true,
+        //contentBase: path.resolve(__dirname, BUILD_FOLDER_NAME, UI_FOLDER_NAME),
+        //watchContentBase: true,
+        compress: false,
         port: 9000
     }
 }
@@ -137,7 +116,6 @@ const contentScriptsConfig = {
     },
     plugins: [
         new CleanWebpackPlugin(),
-        //new WaitPlugin(BUILT_REACT_UI_JS_PATH),
         new TransformJson({
             filename: `../manifest.json`,
             source: './src/chrome-specific/manifest.json',
@@ -170,4 +148,6 @@ const contentScriptsConfig = {
     ],
 };
 
-module.exports = [reactUIConfig, contentScriptsConfig]
+module.exports = [reactUIConfig]
+
+//module.exports = [reactUIConfig, contentScriptsConfig]

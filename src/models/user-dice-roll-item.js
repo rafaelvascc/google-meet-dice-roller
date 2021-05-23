@@ -1,7 +1,9 @@
 /** @class UserDiceRollItem represents an item in a user defined UserDiceRollSet.*/
 class UserDiceRollItem {
-    constructor() {
-        this.name = '';
-        this.value = '';
+    constructor(label, command) {
+        this.label = label || '';
+        this.command = command || '';
     }
 }
+
+export default UserDiceRollItem;

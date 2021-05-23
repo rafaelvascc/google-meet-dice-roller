@@ -1,0 +1,5 @@
+export const ADD_DICE_ROLL_SET = 'ADD_DICE_ROLL_SET';
+export const DELETE_DICE_ROLL_SET = 'DELETE_DICE_ROLL_SET';
+export const ADD_DICE_ROLL = 'ADD_DICE_ROLL';
+export const DELETE_DICE_ROLL = 'DELETE_DICE_ROLL';
+export const EDIT_DICE_ROLL = 'EDIT_DICE_ROLL';

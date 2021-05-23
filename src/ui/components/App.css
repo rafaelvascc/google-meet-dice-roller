@@ -1,0 +1,5 @@
+.dice-set-header {
+    justify-content: space-between;
+    display        : flex;
+    padding-right  : 16px !important;
+}
