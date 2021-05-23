@@ -57,6 +57,7 @@ class DiceRollResult {
             negate,
             plus,
             minus,
+            times,
             command,
         } = diceRollCommand;
 
@@ -100,6 +101,10 @@ class DiceRollResult {
             this.sum += plus;
         }
 
+        if (times) {
+            this.sum *= times;
+        }
+
         if (target) {
             this.success = this.sum >= target;
         }
@@ -131,10 +136,11 @@ class DiceRollResult {
             negate,
             plus,
             minus,
+            times,
             command
         } = this;
 
-        return `${command}:\n\t (${rolls.join(', ')})${plus ? ` +${plus} ` : minus ? ` -${minus} ` : ''}${successes !== null ? ` Successes: ${successes}` : ''} Total: ${sum}${target ? ` >= ${target},` : negate ? ` <= ${negate},` : ''}${success !== null ? success ? ` SUCCESS ` : ` FAILURE ` : ''}\n`;
+        return `${command}:\n\t (${rolls.join(', ')})${plus ? ` +${plus} ` : minus ? ` -${minus} ` : times ? ` *${times} ` : ''}${successes !== null ? ` Successes: ${successes}` : ''} Total: ${sum}${target ? ` >= ${target},` : negate ? ` <= ${negate},` : ''}${success !== null ? success ? ` SUCCESS ` : ` FAILURE ` : ''}\n`;
     }
 
     /**

@@ -18,6 +18,7 @@ class DiceRollCommand {
         this.negate = 0;
         this.plus = 0;
         this.minus = 0;
+        this.times = 0;
         this.command = commandString;
         this.processCommandString(commandString);
     }
@@ -70,6 +71,9 @@ class DiceRollCommand {
                         }
                         if (matches[11] === "-") {
                             this.minus = parseInt(subToken);
+                        }
+                        if (matches[11] === "*") {
+                            this.times = parseInt(subToken);
                         }
                         continue;
                     }
