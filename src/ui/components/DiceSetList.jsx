@@ -65,7 +65,7 @@ const DiceSetList = (props) => {
                 <Accordion>
                     {diceRollCollection.map((s, i) => {
                         return (
-                            <DiceRollSetCard key={i} set={s} index={i} />
+                            <DiceRollSetCard key={s.name} set={s} index={i} />
                         )
                     })}
                 </Accordion>

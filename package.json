@@ -1,9 +1,11 @@
 {
   "name": "google-meet-dice-roller",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "scripts": {
     "start-ui": "webpack-dev-server --hot --open --mode development --disable-host-check",
-    "build": "npx webpack --mode production",
+    "build-ui": "npx webpack --mode production",
+    "build-cs": "npx webpack --mode production --config webpack.config.content.scripts.js",
+    "build": "npm run build-cs & npm run build-ui",
     "clear": "rimraf build dist"
   },
   "dependencies": {

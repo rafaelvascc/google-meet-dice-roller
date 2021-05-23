@@ -1,10 +1,18 @@
 import { 
+    LOAD_DICE_ROLL_SETS,
     ADD_DICE_ROLL_SET, 
     DELETE_DICE_ROLL_SET, 
     ADD_DICE_ROLL, 
     DELETE_DICE_ROLL, 
     EDIT_DICE_ROLL 
 } from './actions.js'
+
+export const loadDiceRollSets = (sets) => {
+    return {
+        type: LOAD_DICE_ROLL_SETS,
+        payload: sets
+    }
+}
 
 export const diceRollSetAdded = (name) => {
     return {

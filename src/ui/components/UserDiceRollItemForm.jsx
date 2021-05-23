@@ -7,7 +7,7 @@ import Overlay from 'react-bootstrap/Overlay';
 import Tooltip from 'react-bootstrap/Tooltip';
 import Popover from 'react-bootstrap/Popover';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faCheck, faTimes, faMinus } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faCheck, faTimes, faMinus, faDice } from '@fortawesome/free-solid-svg-icons';
 import DeleteConfirmationForm from './DeleteConfirmationForm.jsx';
 import { isDiceRollLabelValid, isDiceRollCommandValid } from '../../models/dice-roll-utils.js'
 import { useDispatch } from 'react-redux';
@@ -32,15 +32,18 @@ const UserDiceRollItemForm = (props) => {
     const [deleteTooltipVisible, setDeleteTooltipVisible] = useState(false);
     const [confirmEditTooltipVisible, setConfirmEditTooltipVisible] = useState(false);
     const [cancelEditTooltipVisible, setCancelEditTooltipVisible] = useState(false);
+    const [rollTooltipVisible, setRollTooltipVisible] = useState(false);
 
     const btnEditRef = useRef(null);
     const btnDeleteRef = useRef(null);
     const btnConfirmRef = useRef(null);
     const btnCancelRef = useRef(null);
+    const btnRollRef = useRef(null);
     const btnEditTooltipTimeoutRef = useRef(null);
     const btnDeleteTooltipTimeoutRef = useRef(null);
     const btnConfirmTooltipTimeoutRef = useRef(null);
     const btnCancelTooltipTimeoutRef = useRef(null);
+    const btnRollTooltipTimeoutRef = useRef(null);
 
     const [removeDiceRollPopOverVisible, setRemoveDiceRollPopOverVisible] = useState(false);
 
@@ -90,6 +93,24 @@ const UserDiceRollItemForm = (props) => {
         setIsEditing(false);
     }
 
+    const onBtnRollClick = (event) => {
+        if (chrome && chrome.tabs) {
+            chrome.tabs.query({
+                active: true,
+                currentWindow: true,
+                url: "*://meet.google.com/*"
+            }, tabs => {
+                if (tabs.length > 0) {
+                    var firstMeetTabId = tabs[0].id;
+                    chrome.tabs.sendMessage(firstMeetTabId, {
+                        type: "onBtnRollClick",
+                        payload: `${props.set.name}.${label}`
+                    });
+                }
+            })
+        }
+    }
+
     const onLabelChange = (event) => {
         const { value } = event.target;
         setLabel(value);
@@ -113,6 +134,7 @@ const UserDiceRollItemForm = (props) => {
         setDeleteTooltipVisible(false);
         setConfirmEditTooltipVisible(false);
         setCancelEditTooltipVisible(false);
+        setRollTooltipVisible(false);
     }
 
     const onFormKeyUp = (event) => {
@@ -140,7 +162,7 @@ const UserDiceRollItemForm = (props) => {
     return (
         <Form onKeyUp={onFormKeyUp} onSubmit={(event) => event.preventDefault()}>
             <Form.Row>
-                <Form.Group as={Col} sm={4} controlId="diceLabel" style={{marginBottom: "5px"}}>
+                <Form.Group as={Col} sm={4} controlId="diceLabel" style={{ marginBottom: "5px" }}>
                     <Form.Control
                         size="sm"
                         isValid={didLabelChange && isLabelValid}
@@ -152,7 +174,7 @@ const UserDiceRollItemForm = (props) => {
                     />
                     <div style={didLabelChange && !isLabelValid ? { "display": "block" } : { "display": "none" }} className='invalid-feedback'>Dice roll command label should be unique in the set, not be empty, and can't contain spaces or dots</div>
                 </Form.Group>
-                <Form.Group as={Col} sm={6} controlId="diceCmd" style={{marginBottom: "5px"}}>
+                <Form.Group as={Col} sm={6} controlId="diceCmd" style={{ marginBottom: "5px" }}>
                     <Form.Control
                         size="sm"
                         isValid={didCommandChange && isCommandValid}
@@ -167,9 +189,9 @@ const UserDiceRollItemForm = (props) => {
                 {isEditing ?
                     (
                         <>
-                            <ButtonGroup>
+                            <ButtonGroup style={{ marginLeft: "9px" }}>
                                 <Button
-                                    size="sm"   
+                                    size="sm"
                                     disabled={!isLabelValid || !isCommandValid}
                                     ref={btnConfirmRef}
                                     style={{ marginRight: "5px" }}
@@ -204,20 +226,32 @@ const UserDiceRollItemForm = (props) => {
                     ) :
                     (
                         <>
-                            <ButtonGroup>
+                            <ButtonGroup style={{ marginLeft: "9px" }}>
+                                <Button
+                                    size="sm"
+                                    ref={btnRollRef}
+                                    style={{ marginRight: "5px" }}
+                                    onClick={onBtnRollClick}
+                                    onMouseEnter={(event) => onBtnMouseEnter(btnRollTooltipTimeoutRef, setRollTooltipVisible)}
+                                    onMouseLeave={(event) => onBtnMouseLeave(btnRollTooltipTimeoutRef)}
+                                    onBlur={(event) => onBtnMouseLeave(btnRollTooltipTimeoutRef)}
+                                    variant="primary"
+                                    className='btn-fa-circle-sm'>
+                                    <FontAwesomeIcon icon={faDice} style={{ fontSize: "16px" }} />
+                                </Button>
                                 <Button
                                     size="sm"
                                     ref={btnEditRef}
-                                    style={{ marginRight: "5px"}}
+                                    style={{ marginRight: "5px" }}
                                     onClick={onBtnEditClick}
                                     onMouseEnter={(event) => onBtnMouseEnter(btnEditTooltipTimeoutRef, setEditTooltipVisible)}
                                     onMouseLeave={(event) => onBtnMouseLeave(btnEditTooltipTimeoutRef)}
                                     onBlur={(event) => onBtnMouseLeave(btnEditTooltipTimeoutRef)}
                                     variant="success"
                                     className='btn-fa-circle-sm'>
-                                    <FontAwesomeIcon icon={faEdit} style={{ fontSize: "16px" }}/>
+                                    <FontAwesomeIcon icon={faEdit} style={{ fontSize: "16px" }} />
                                 </Button>
-                                <Button 
+                                <Button
                                     size="sm"
                                     ref={btnDeleteRef}
                                     style={{ marginRight: "5px" }}
@@ -230,6 +264,9 @@ const UserDiceRollItemForm = (props) => {
                                     <FontAwesomeIcon icon={faMinus} />
                                 </Button>
                             </ButtonGroup>
+                            <Overlay target={btnRollRef.current} show={rollTooltipVisible} placement="bottom">
+                                {(props) => <Tooltip id="roll-dice-roll-tooltip" {...props}>Roll dice!</Tooltip>}
+                            </Overlay>
                             <Overlay target={btnEditRef.current} show={editTooltipVisible} placement="bottom">
                                 {(props) => <Tooltip id="edit-dice-roll-tooltip" {...props}>Click to edit this dice roll command</Tooltip>}
                             </Overlay>

@@ -148,7 +148,7 @@ const DiceRollSetCard = (props) => {
                     </Form.Row>
                     {props.set.items.length > 0 && props.set.items.map((item, i) => {
                         return (
-                            <UserDiceRollItemForm key={i} set={props.set} item={item} index={i} />
+                            <UserDiceRollItemForm key={item.label} set={props.set} item={item} index={i} />
                         )
                     })}
                 </Card.Body>

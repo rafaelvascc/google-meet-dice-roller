@@ -7,7 +7,7 @@ export const isDiceRollLabelValid = (set, label, originalLabel) => {
         label.indexOf("\\") < 0 &&
         label.indexOf("/") < 0 &&
         label.indexOf(" ") < 0 &&
-        !diceRollSetHasDiceRollItem(set, label)) || label === originalLabel;
+        !diceRollSetHasDiceRollItem(set, label)) || (!!originalLabel && label === originalLabel);
 }
 
 export const diceRollSetHasDiceRollItem = (set, label) => {

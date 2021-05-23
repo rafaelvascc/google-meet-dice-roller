@@ -1,6 +1,7 @@
 import update from 'immutability-helper';
 import _ from 'lodash';
 import {
+    LOAD_DICE_ROLL_SETS,
     ADD_DICE_ROLL_SET,
     DELETE_DICE_ROLL_SET,
     ADD_DICE_ROLL,
@@ -10,11 +11,13 @@ import {
 import UserDiceRollSet from '../models/user-dice-roll-set';
 import UserDiceRollItem from '../models/user-dice-roll-item';
 
-const initialState = JSON.parse(localStorage.getItem("dice-roll-collection") || "[]"); //TODO: load from saved data
+const initialState = []; //TODO: load from saved data
 
 const appReducer = (state = initialState, action) => {
-    console.log("action", action)
     switch (action.type) {
+        case LOAD_DICE_ROLL_SETS: {
+            return action.payload;
+        }
         case ADD_DICE_ROLL_SET: {
             const newState = update(state, { $push: [new UserDiceRollSet(action.payload)] });
             return newState;
