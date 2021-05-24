@@ -111,6 +111,11 @@ Since I'm too lazy to see emails and thank each one that donated, I will leave a
 
 # Changelog
 
+## [1.0.1] - 2021-05-24
+
+### Fixes
+- Fixed header buttons tooltips 
+
 ## [1.0.0] - 2021-05-23
 
 ### Added
