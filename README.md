@@ -99,7 +99,7 @@ I created this extension primary for me and my RPG group, then I decided to dist
 
 I have no intention to charge for it's use. First because only a very small amount of people would pay for it and a lot of RPG players would like to use it but can't or won't pay. So I just prefer to leave it free and let everyone enjoy.
 
-Second, I don't want to turn something I made for myself, for fun and to mess with React, to turn into a side/second job.
+Second, I don't want to turn something I made for myself, for fun and to mess with React, into a side/second job.
 
 If you liked the extension and are feeling generous, on the UI's header there is a **Donate** button. You may send me money for a coffee with it or just use the "donate" button bellow. If you're feeling REALLY generous, you can send me enough for a RTX 3080. :grin:
 
