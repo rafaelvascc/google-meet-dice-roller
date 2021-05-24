@@ -99,7 +99,7 @@ If you liked the extension and are feeling generous, on the UI's header there is
 
 [![btn_donate_LG.gif](./docs/btn_donate_LG.gif)](https://www.paypal.com/donate/?hosted_button_id=8P3F8ZGPH9L34)
 
-Since I'm too lazy to see emails and thank each one that done, i will leave a great **"Thanks"** here in advance.
+Since I'm too lazy to see emails and thank each one that donated, I will leave a great **"Thanks"** here in advance.
 
 # Changelog
 
