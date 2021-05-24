@@ -1,7 +1,7 @@
 # Google Meet Dice Roller
 Dice roller extension for RPG players using Google Meet on Google Chrome or Microsoft Edge (Heyyyy!!! It works!)
 
-If you're seeing this page, probably the Google Meet Dice Roller extension was just updated... Better read these docs to keep up with changes.
+If you're seeing this page, probably the Google Meet Dice Roller extension was just installed or updated... Better read these docs to keep up with changes.
 
 ## Basic Usage
 

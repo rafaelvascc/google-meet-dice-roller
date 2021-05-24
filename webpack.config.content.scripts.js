@@ -58,7 +58,8 @@ const contentScriptsConfig = {
         }),
         new CopyPlugin({
             patterns: [
-                { from: './assets/icons', to: '../icons' }
+                { from: './assets/icons', to: '../icons' },
+                { from: './src/chrome-specific/background.js', to: '../background.js' }
             ],
             options: {
                 concurrency: 100,

@@ -54,7 +54,7 @@ const Header = () => {
             style={{ color: "#fff", marginRight: "8px" }}
           />
         </a>
-        <a ref={helpBtnRef} href="https://github.com/rafaelvascc/google-meets-dice-roller/blob/master/README.md" target="_blank" rel="noreferrer noopener">
+        <a ref={helpBtnRef} href="https://github.com/rafaelvascc/google-meet-dice-roller/blob/master/README.md" target="_blank" rel="noreferrer noopener">
           <FontAwesomeIcon
             onMouseEnter={(event) => onBtnMouseEnter(helpTolltipTmeoutRef, setHelpTolltipVisible)}
             onMouseLeave={(event) => onBtnMouseLeave(helpTolltipTmeoutRef)}
