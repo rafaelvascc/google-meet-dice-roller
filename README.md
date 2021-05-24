@@ -81,12 +81,25 @@ A saved dice roll command can be used in two ways:
 
 Probably you've noticed that **the idea is for a dice set to represent a character and the command in the dice set to represent the character's actions**.
 
-## Help and Donations
-On the UI"s header there are two additional buttons/links, **Donate** and **Help**.
+## Help, bug reports and feature requests
 
-If you're feeling generous, you send me money for a coffee using the **Donate button**. If you're feeling REALLY generous, you can send me enough for a RTX 3080. :grin:
+The best place for help, bug reports and feature requets is the [project's issues page](https://github.com/rafaelvascc/google-meet-dice-roller/issues). **I strongly prefer tracking issues in github instead of reading emails**. Even because other users might help as well.
 
-The help button opens a new tab for this README.md file.
+On the UI's header, there are buttons/links for bug report and feature requests (that leads to the [project's issues page](https://github.com/rafaelvascc/google-meet-dice-roller/issues)) and a help/docs button that leads to this README.md file.
+
+## Donations
+
+I created this extension primary for me and my RPG group, then I decided to distribute it for free because "why not?". 
+
+I have no intention to charge for it's use. First because only a very small amount of people would pay for it and a lot of RPG players would like to use it but can't or won't pay. So I just prefer to leave it free and let everyone enjoy.
+
+Second, I don't want to turn something I made for myself, for fun and to mess with React, to turn into a side/second job.
+
+If you liked the extension and are feeling generous, on the UI's header there is a **Donate** button. You may send me money for a coffee with it or just use the "donate" button bellow. If you're feeling REALLY generous, you can send me enough for a RTX 3080. :grin:
+
+[![btn_donate_LG.gif](./docs/btn_donate_LG.gif)](https://www.paypal.com/donate/?hosted_button_id=8P3F8ZGPH9L34)
+
+Since I'm too lazy to see emails and thank each one that done, i will leave a great **"Thanks"** here in advance.
 
 # Changelog
 
@@ -103,3 +116,10 @@ The help button opens a new tab for this README.md file.
 
 ### Fixes
 - Fixed subtracting constant value in commands like /r 2d6-1 
+
+# Planned features (no date yet)
+- User variables to dice roll sets
+- Backup/Export and Restore/Import buttons
+
+# Tech debt
+- Make button with tooltip a React component 

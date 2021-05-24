@@ -4,14 +4,17 @@ import Navbar from 'react-bootstrap/Navbar';
 import Overlay from 'react-bootstrap/Overlay';
 import Tooltip from 'react-bootstrap/Tooltip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDonate, faQuestion } from '@fortawesome/free-solid-svg-icons';
+import { faDonate, faQuestion, faBug } from '@fortawesome/free-solid-svg-icons';
 
 const Header = () => {
   const [donateTolltipVisible, setDonateTolltipVisible] = useState(false);
+  const [bugTolltipVisible, setBugTolltipVisible] = useState(false);
   const [helpTolltipVisible, setHelpTolltipVisible] = useState(false);
   const donateTolltipTimeoutRef = useRef(null);
+  const bugTolltipTmeoutRef = useRef(null);
   const helpTolltipTmeoutRef = useRef(null);
   const donateBtnRef = useRef(null);
+  const bugBtnRef = useRef(null);
   const helpBtnRef = useRef(null);
 
   const onBtnMouseEnter = (tooltipTimeoutRef, setTooltipVisibleFunc) => {
@@ -54,6 +57,15 @@ const Header = () => {
             style={{ color: "#fff", marginRight: "8px" }}
           />
         </a>
+        <a ref={helpBtnRef} href="https://github.com/rafaelvascc/google-meet-dice-roller/issues" target="_blank" rel="noreferrer noopener">
+          <FontAwesomeIcon
+            onMouseEnter={(event) => onBtnMouseEnter(bugTolltipTmeoutRef, setBugTolltipVisible)}
+            onMouseLeave={(event) => onBtnMouseLeave(bugTolltipTmeoutRef)}
+            onBlur={(event) => onBtnMouseLeave(bugTolltipTmeoutRef)}
+            icon={faBug}
+            style={{ color: "#fff", marginRight: "8px" }}
+          />
+        </a>
         <a ref={helpBtnRef} href="https://github.com/rafaelvascc/google-meet-dice-roller/blob/master/README.md" target="_blank" rel="noreferrer noopener">
           <FontAwesomeIcon
             onMouseEnter={(event) => onBtnMouseEnter(helpTolltipTmeoutRef, setHelpTolltipVisible)}
@@ -66,8 +78,11 @@ const Header = () => {
         <Overlay target={donateBtnRef.current} show={donateTolltipVisible} placement="bottom">
           {(props) => <Tooltip id="donate-tooltip" {...props}>Donate (Paypal)</Tooltip>}
         </Overlay>
+        <Overlay target={bugBtnRef.current} show={bugTolltipVisible} placement="bottom">
+          {(props) => <Tooltip id="bug-tooltip" {...props}>Report bug or ask for feature (Github)</Tooltip>}
+        </Overlay>
         <Overlay target={helpBtnRef.current} show={helpTolltipVisible} placement="bottom">
-          {(props) => <Tooltip id="help-tooltip" {...props}>Help (Github)</Tooltip>}
+          {(props) => <Tooltip id="help-tooltip" {...props}>Help/Docs (Github)</Tooltip>}
         </Overlay>
       </div>
     </Navbar>
