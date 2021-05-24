@@ -11,8 +11,8 @@ const Header = () => {
   const [bugTolltipVisible, setBugTolltipVisible] = useState(false);
   const [helpTolltipVisible, setHelpTolltipVisible] = useState(false);
   const donateTolltipTimeoutRef = useRef(null);
-  const bugTolltipTmeoutRef = useRef(null);
-  const helpTolltipTmeoutRef = useRef(null);
+  const bugTolltipTimeoutRef = useRef(null);
+  const helpTolltipTimeoutRef = useRef(null);
   const donateBtnRef = useRef(null);
   const bugBtnRef = useRef(null);
   const helpBtnRef = useRef(null);
@@ -32,6 +32,7 @@ const Header = () => {
 
   const hideAllToolTips = () => {
     setDonateTolltipVisible(false);
+    setBugTolltipVisible(false);
     setHelpTolltipVisible(false);
   }
 
@@ -57,20 +58,20 @@ const Header = () => {
             style={{ color: "#fff", marginRight: "8px" }}
           />
         </a>
-        <a ref={helpBtnRef} href="https://github.com/rafaelvascc/google-meet-dice-roller/issues" target="_blank" rel="noreferrer noopener">
+        <a ref={bugBtnRef} href="https://github.com/rafaelvascc/google-meet-dice-roller/issues" target="_blank" rel="noreferrer noopener">
           <FontAwesomeIcon
-            onMouseEnter={(event) => onBtnMouseEnter(bugTolltipTmeoutRef, setBugTolltipVisible)}
-            onMouseLeave={(event) => onBtnMouseLeave(bugTolltipTmeoutRef)}
-            onBlur={(event) => onBtnMouseLeave(bugTolltipTmeoutRef)}
+            onMouseEnter={(event) => onBtnMouseEnter(bugTolltipTimeoutRef, setBugTolltipVisible)}
+            onMouseLeave={(event) => onBtnMouseLeave(bugTolltipTimeoutRef)}
+            onBlur={(event) => onBtnMouseLeave(bugTolltipTimeoutRef)}
             icon={faBug}
             style={{ color: "#fff", marginRight: "8px" }}
           />
         </a>
         <a ref={helpBtnRef} href="https://github.com/rafaelvascc/google-meet-dice-roller/blob/master/README.md" target="_blank" rel="noreferrer noopener">
           <FontAwesomeIcon
-            onMouseEnter={(event) => onBtnMouseEnter(helpTolltipTmeoutRef, setHelpTolltipVisible)}
-            onMouseLeave={(event) => onBtnMouseLeave(helpTolltipTmeoutRef)}
-            onBlur={(event) => onBtnMouseLeave(helpTolltipTmeoutRef)}
+            onMouseEnter={(event) => onBtnMouseEnter(helpTolltipTimeoutRef, setHelpTolltipVisible)}
+            onMouseLeave={(event) => onBtnMouseLeave(helpTolltipTimeoutRef)}
+            onBlur={(event) => onBtnMouseLeave(helpTolltipTimeoutRef)}
             icon={faQuestion}
             style={{ color: "#fff" }}
           />
