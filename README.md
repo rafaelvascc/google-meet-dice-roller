@@ -119,6 +119,7 @@ Since I'm too lazy to see emails and thank each one that donated, I will leave a
 
 ### Changed
 - Better docs
+- Showing the roll "label" if a saved dice roll is used
 
 ## [0.0.0.2] - 2020-07-22
 
@@ -128,6 +129,9 @@ Since I'm too lazy to see emails and thank each one that donated, I will leave a
 # Planned features (no date yet)
 - User variables to dice roll sets
 - Backup/Export and Restore/Import buttons
+- Make the UI a floating pop up (don't know if it is possible yet)
+- Add a "options" tab with some requested options like "Sort rolled dice: {true} or {false}"
 
 # Tech debt
 - Make button with tooltip a React component 
+- Migrate to manifest v3 
