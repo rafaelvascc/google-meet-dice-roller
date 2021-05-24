@@ -123,7 +123,7 @@ class DiceRollResult {
      * 
      * @returns {String} The string used to present this object's results to the user.
      */
-    asPresentationString = () => {
+    asPresentationString = (rollLabel) => {
         const {
             rolls,
             successes,
@@ -140,7 +140,7 @@ class DiceRollResult {
             command
         } = this;
 
-        return `${command}:\n\t (${rolls.join(', ')})${plus ? ` +${plus} ` : minus ? ` -${minus} ` : times ? ` *${times} ` : ''}${successes !== null ? ` Successes: ${successes}` : ''} Total: ${sum}${target ? ` >= ${target},` : negate ? ` <= ${negate},` : ''}${success !== null ? success ? ` SUCCESS ` : ` FAILURE ` : ''}\n`;
+        return `${rollLabel ? `${rollLabel} => `: ''}${command}:\n\t (${rolls.join(', ')})${plus ? ` +${plus} ` : minus ? ` -${minus} ` : times ? ` *${times} ` : ''}${successes !== null ? ` Successes: ${successes}` : ''} Total: ${sum}${target ? ` >= ${target},` : negate ? ` <= ${negate},` : ''}${success !== null ? success ? ` SUCCESS ` : ` FAILURE ` : ''}\n`;
     }
 
     /**

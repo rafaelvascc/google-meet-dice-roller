@@ -59,13 +59,13 @@ class DiceRollResultSet {
      * 
      * @returns {String} The string used to present this object's results to the user.
      */
-    asPresentationString = () => {
+    asPresentationString = (rollLabel) => {
         let output = "";
         let total = 0;
         if (this.results && this.results.length) {
             for (const result of this.results) {
                 total += result.sum;
-                output += result.asPresentationString();
+                output += result.asPresentationString(rollLabel);
             }
             if (this.results.length > 1 || this.constant !== 0) {
                 output += this.formatTotalResult(total, this.constant);

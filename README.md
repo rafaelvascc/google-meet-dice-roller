@@ -3,6 +3,12 @@ Dice roller extension for RPG players using Google Meet on Google Chrome or Micr
 
 If you're seeing this page, probably the Google Meet Dice Roller extension was just installed or updated... Better read these docs to keep up with changes.
 
+## For Microsoft Edge Users
+
+On Edge, after the extension is installed or updated, a white halo may apear surrounding the extension icon in the toolbar. This means you need to give permission to the extension to access Google Meet. To do that, simply click on the icon.
+
+![edge_case](./docs/edge_case.gif)
+
 ## Basic Usage
 
 In Google Meet's chat window's text input, use the **/r** or **roll** commands and hit **Enter** to roll dice.

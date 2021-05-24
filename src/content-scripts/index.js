@@ -1,4 +1,3 @@
-debugger;
 import DiceRollResultSet from '../models/dice-roll-result-set'
 
 var sets = {};
@@ -67,10 +66,10 @@ if (chrome && chrome.runtime) {
 
 document.addEventListener("keydown", event => {
     if (event.keyCode === 13 && event.target.name === "chatTextInput" && (event.target.value.startsWith('roll') || event.target.value.startsWith('/r'))) {
-        var value = event.target.value.startsWith('/r') ? event.target.value.substring('/r'.length).trim() : event.target.value.substring('roll'.length).trim();
+        var rollLabel = event.target.value.startsWith('/r') ? event.target.value.substring('/r'.length).trim() : event.target.value.substring('roll'.length).trim();
 
-        var hasDot = value.indexOf(".") > 0;
-        var tokens = hasDot ? value.split(".") : [];
+        var hasDot = rollLabel.indexOf(".") > 0;
+        var tokens = hasDot ? rollLabel.split(".") : [];
 
         if (tokens.length === 2) {
             var set = sets[tokens[0]];
@@ -78,7 +77,7 @@ document.addEventListener("keydown", event => {
                 var command = set[tokens[1]];
                 if (command) {
                     const result = DiceRollResultSet.fromUserCommandLine(command);
-                    event.target.value = result ? value + ": " + result.asPresentationString() : event.target.value;
+                    event.target.value = result ? result.asPresentationString(rollLabel) : event.target.value;
                 }
             }
         }
