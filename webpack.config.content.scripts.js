@@ -40,7 +40,7 @@ const contentScriptsConfig = {
             source: './src/chrome-specific/manifest.json',
             object: {
                 version: PACKAGE.version,
-                browser_action: {
+                action: {
                     default_icon: 'icons/128.png',
                     default_popup: BUILD_UI_INDEX_HTML_FILE_RELATIVE_TO_MANIFEST
                 },
