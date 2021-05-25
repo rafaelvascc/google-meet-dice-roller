@@ -1,19 +1,17 @@
 import React, { useState, useRef } from 'react';
-import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import ButtonWithTolltip from './ButtonWithTolltip.jsx';
 import Accordion from 'react-bootstrap/Accordion';
 import Popover from 'react-bootstrap/Popover';
-import Tooltip from 'react-bootstrap/Tooltip';
 import Overlay from 'react-bootstrap/Overlay';
 import Card from 'react-bootstrap/Card';
 import UserDiceRollItemForm from './UserDiceRollItemForm.jsx';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 import NewDiceRollForm from './NewDiceRollForm.jsx';
 import DeleteConfirmationForm from './DeleteConfirmationForm.jsx'
 import { useDispatch } from 'react-redux';
 import { diceRollSetDeleted } from '../../reducers/action-creators'
-import { Col, Form, Row } from 'react-bootstrap';
+import { Col, Form } from 'react-bootstrap';
 
 const DiceRollSetCard = (props) => {
     if (!props || !props.set) {
@@ -21,35 +19,21 @@ const DiceRollSetCard = (props) => {
     }
     const dispatch = useDispatch();
 
-    const [removeSetTooltipVisible, setRemoveSetTooltipVisible] = useState(false);
+    const [addDiceRollPopoverVisible, setAddDiceRollPopoverVisible] = useState(false);
     const [removeSetPopoverVisible, setRemoveSetPopoverVisible] = useState(false);
-    const removeSetPopoverTimeoutRef = useRef(null);
+
+    const addDiceRollPopoverBtnRef = useRef(null);
     const removeSetPopoverBtnRef = useRef(null);
 
-    const [addDiceRollTooltipVisible, setAddDiceRollTooltipVisible] = useState(false);
-    const [addDiceRollPopoverVisible, setAddDiceRollPopoverVisible] = useState(false);
-    const addDiceRollPopoverTimeoutRef = useRef(null);
-    const addDiceRollPopoverBtnRef = useRef(null);
-
-    const onBtnRemoveSetMouseEnter = (event) => {
-        removeSetPopoverTimeoutRef.current = setTimeout(() => {
-            setRemoveSetTooltipVisible(true);
-        }, 300);
-    }
-
-    const onBtnRemoveSetMouseLeave = (event) => {
-        if (removeSetPopoverTimeoutRef.current) {
-            clearTimeout(removeSetPopoverTimeoutRef.current);
-        }
-        setRemoveSetTooltipVisible(false);
+    const onBtnAddDiceClick = (event) => {
+        event.stopPropagation();
+        removeSetPopoverVisible && setRemoveSetPopoverVisible(false);
+        setAddDiceRollPopoverVisible(!addDiceRollPopoverVisible);
     }
 
     const onBtnRemoveSetClick = (event) => {
         event.stopPropagation();
-        if (addDiceRollPopoverVisible) {
-            setAddDiceRollPopoverVisible(false);
-        }
-        setRemoveSetTooltipVisible(false);
+        addDiceRollPopoverVisible && setAddDiceRollPopoverVisible(false);
         setRemoveSetPopoverVisible(!removeSetPopoverVisible);
     }
 
@@ -67,28 +51,6 @@ const DiceRollSetCard = (props) => {
         </Popover>
     );
 
-    const onBtnAddDiceMouseEnter = (event) => {
-        addDiceRollPopoverTimeoutRef.current = setTimeout(() => {
-            setAddDiceRollTooltipVisible(true);
-        }, 300);
-    }
-
-    const onBtnAddDiceSetMouseLeave = (event) => {
-        if (addDiceRollPopoverTimeoutRef.current) {
-            clearTimeout(addDiceRollPopoverTimeoutRef.current);
-        }
-        setAddDiceRollTooltipVisible(false);
-    }
-
-    const onBtnAddDiceClick = (event) => {
-        event.stopPropagation();
-        if (removeSetPopoverVisible) {
-            setRemoveSetPopoverVisible(false);
-        }
-        setAddDiceRollTooltipVisible(true);
-        setAddDiceRollPopoverVisible(!addDiceRollPopoverVisible);
-    }
-
     const addDicePopover = (innerProps) => (
         <Popover onClick={(event) => event.stopPropagation()} id='popover-basic' {...innerProps}>
             <Popover.Title as='h3'>Add Dice Roll To Set</Popover.Title>
@@ -103,46 +65,38 @@ const DiceRollSetCard = (props) => {
             <Accordion.Toggle className="dice-set-header" as={Card.Header} eventKey={props.index.toString()}>
                 {props.set.name}
                 <ButtonGroup>
-                    <Button
+                    <ButtonWithTolltip
                         style={{ marginRight: "5px" }}
-                        ref={addDiceRollPopoverBtnRef}
+                        showTooltip={!addDiceRollPopoverVisible}
+                        getRefFunc={(ref) => addDiceRollPopoverBtnRef.current = ref.current}
                         onClick={onBtnAddDiceClick}
-                        onMouseEnter={onBtnAddDiceMouseEnter}
-                        onMouseLeave={onBtnAddDiceSetMouseLeave}
                         variant="primary"
-                        className='btn-fa-circle-sm'>
-                        <FontAwesomeIcon icon={faPlus} />
-                    </Button>
-                    <Button
-                        ref={removeSetPopoverBtnRef}
+                        faIcon={faPlus}
+                        tooltipText={"Click to add a dice roll command to this dice roll set"}
+                    />
+                    <ButtonWithTolltip
+                        showTooltip={!removeSetPopoverVisible}
+                        getRefFunc={(ref) => removeSetPopoverBtnRef.current = ref.current}
                         onClick={onBtnRemoveSetClick}
-                        onMouseEnter={onBtnRemoveSetMouseEnter}
-                        onMouseLeave={onBtnRemoveSetMouseLeave}
                         variant="danger"
-                        className='btn-fa-circle-sm'>
-                        <FontAwesomeIcon icon={faMinus} />
-                    </Button>
+                        faIcon={faMinus}
+                        tooltipText={"Click to remove this dice roll set"}
+                    />
                 </ButtonGroup>
-                <Overlay target={addDiceRollPopoverBtnRef.current} show={addDiceRollTooltipVisible && !addDiceRollPopoverVisible} placement="bottom">
-                    {(props) => <Tooltip id="remove-dice-roll-set-tooltip" {...props}>Click to add a dice roll command to this dice roll set</Tooltip>}
-                </Overlay>
                 <Overlay target={addDiceRollPopoverBtnRef.current} show={addDiceRollPopoverVisible} placement="bottom">
                     {(props) => addDicePopover(props)}
-                </Overlay>
-                <Overlay target={removeSetPopoverBtnRef.current} show={removeSetTooltipVisible && !removeSetPopoverVisible} placement="bottom">
-                    {(props) => <Tooltip id="remove-dice-roll-set-tooltip" {...props}>Click to remove this dice roll set</Tooltip>}
                 </Overlay>
                 <Overlay target={removeSetPopoverBtnRef.current} show={removeSetPopoverVisible} placement="bottom">
                     {(props) => removeDiceRollSetPopover(props)}
                 </Overlay>
             </Accordion.Toggle>
             <Accordion.Collapse eventKey={props.index.toString()}>
-                <Card.Body style={{paddingTop: "8px", paddingBottom: "8px", paddingRight: "16px", paddingLeft: "16px"}}>
-                    <Form.Row style={{marginBottom: "0px"}}>
-                        <Form.Group as={Col} sm={4} controlId="diceLabel" style={{marginBottom: "0px"}}>
+                <Card.Body style={{ paddingTop: "8px", paddingBottom: "8px", paddingRight: "16px", paddingLeft: "16px" }}>
+                    <Form.Row style={{ marginBottom: "0px" }}>
+                        <Form.Group as={Col} sm={4} controlId="diceLabel" style={{ marginBottom: "0px" }}>
                             <Form.Label>Label</Form.Label>
                         </Form.Group>
-                        <Form.Group as={Col} sm={6} controlId="diceCmd" style={{marginBottom: "0px"}}>
+                        <Form.Group as={Col} sm={6} controlId="diceCmd" style={{ marginBottom: "0px" }}>
                             <Form.Label>Command</Form.Label>
                         </Form.Group>
                     </Form.Row>
