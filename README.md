@@ -13,9 +13,9 @@ Why it asks for Browsing History Access Permission? Glad you asked.
 
 Because the "Roll Dice!" button in the user interface needs to use the [chrome tabs api](https://developer.chrome.com/docs/extensions/reference/tabs/). By simply requesting access to use this api, the extension is marked as "requiring browser history".
 
-This api is used for the button to find the tab where Google Meet is running and sends a message to this tab. This message trigger an event that make the "Roll Dice!" button work.
+This api is used for the button to find the tab where Google Meet is running and sends a message to this tab. This message triggers an event that make the "Roll Dice!" button work.
 
-You can check this piece of code [here](https://github.com/rafaelvascc/google-meet-dice-roller/blob/eb19b9c7cb2aa3e1361bd2ec523da607ea5e1628/src/ui/components/UserDiceRollItemForm.jsx#L96) and [here](https://github.com/rafaelvascc/google-meet-dice-roller/blob/eb19b9c7cb2aa3e1361bd2ec523da607ea5e1628/src/content-scripts/index.js#L36)
+You can check this piece of code [here](https://github.com/rafaelvascc/google-meet-dice-roller/blob/eb19b9c7cb2aa3e1361bd2ec523da607ea5e1628/src/ui/components/UserDiceRollItemForm.jsx#L96) and [here](https://github.com/rafaelvascc/google-meet-dice-roller/blob/eb19b9c7cb2aa3e1361bd2ec523da607ea5e1628/src/content-scripts/index.js#L36).
 
 ## For Microsoft Edge Users
 
