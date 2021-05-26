@@ -36,17 +36,29 @@ const ButtonWithTolltip = (props) => {
 
     return (
         <>
-            <Button
-                disabled={!!props.disabled}
-                style={props.style}
-                ref={btnRef}
-                onClick={props.onClick}
-                onMouseEnter={onMouseEnter}
-                onMouseLeave={onMouseLeave}
-                variant={props.variant}
-                className='btn-fa-circle-sm'>
-                <FontAwesomeIcon style={props.faStyle} icon={props.faIcon} />
-            </Button>
+            {
+                props.asLink === true ?
+                    <a ref={btnRef} style={props.style} href={props.href} target="_blank" rel="noreferrer noopener">
+                        <FontAwesomeIcon
+                            onMouseEnter={onMouseEnter}
+                            onMouseLeave={onMouseLeave}
+                            icon={props.faIcon}
+                            style={props.faStyle}
+                        />
+                    </a> :
+                    <Button
+                        disabled={!!props.disabled}
+                        style={props.style}
+                        ref={btnRef}
+                        onClick={props.onClick}
+                        onMouseEnter={onMouseEnter}
+                        onMouseLeave={onMouseLeave}
+                        variant={props.variant}
+                        className='btn-fa-circle-sm'>
+                        <FontAwesomeIcon style={props.faStyle} icon={props.faIcon} />
+                    </Button>
+
+            }
             <Overlay target={btnRef.current} show={tooltipVisible && (props.showTooltip === undefined || props.showTooltip === true)} placement="bottom">
                 {(innerProps) => <Tooltip {...innerProps}>{props.tooltipText}</Tooltip>}
             </Overlay>
