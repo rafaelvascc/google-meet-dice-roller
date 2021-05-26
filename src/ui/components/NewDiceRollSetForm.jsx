@@ -66,7 +66,6 @@ const NewDiceRollSetForm = (props) => {
                     onChange={onTxtNewDiceRollSetNameChange}
                     isValid={newDiceRollSetNameChanged && newDiceRollSetNameValid}
                 />
-                <InvalidInputFeedbackText visible={newDiceRollSetNameChanged && !newDiceRollSetNameValid} text="Set name should be unique and not be empty" />
             </Form.Group>
             <Button variant='outline-success' disabled={!newDiceRollSetNameValid} onClick={onBtnConfirmClick} className='btn-fa-circle-tn btn-form-popover'>
                 <FontAwesomeIcon icon={faCheck} />
@@ -74,6 +73,7 @@ const NewDiceRollSetForm = (props) => {
             <Button variant='outline-warning' onClick={onBtnCancelClick} className='btn-fa-circle-tn btn-form-popover'>
                 <FontAwesomeIcon icon={faTimes} />
             </Button>
+            <InvalidInputFeedbackText visible={newDiceRollSetNameChanged && !newDiceRollSetNameValid} text="Set name should be unique and not be empty" />
         </Form>
     )
 }
