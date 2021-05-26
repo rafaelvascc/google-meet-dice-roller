@@ -3,9 +3,8 @@ import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ButtonWithTolltip from './ButtonWithTolltip.jsx';
-import Overlay from 'react-bootstrap/Overlay';
-import Popover from 'react-bootstrap/Popover';
 import InvalidInputFeedbackText from './InvalidInputFeedbackText.jsx';
+import FormPopoverContainer from './FormPopoverContainer.jsx';
 import { faEdit, faCheck, faTimes, faMinus, faDice } from '@fortawesome/free-solid-svg-icons';
 import DeleteConfirmationForm from './DeleteConfirmationForm.jsx';
 import { isDiceRollLabelValid, isDiceRollCommandValid } from '../../models/dice-roll-utils.js'
@@ -96,20 +95,6 @@ const UserDiceRollItemForm = (props) => {
         }
     }
 
-    const removeDiceRollPopover = (innerProps) => (
-        <Popover onClick={(event) => event.stopPropagation()} id='popover-basic' {...innerProps}>
-            <Popover.Title as='h3'>Remove Dice Roll Command</Popover.Title>
-            <Popover.Content>
-                <DeleteConfirmationForm
-                    onBtnConfirmClick={() => {
-                        setRemoveDiceRollPopOverVisible(false);
-                        dispatch(diceRollDeleted(props.set.name, label));
-                    }}
-                    onBtnCancelClick={() => setRemoveDiceRollPopOverVisible(false)} />
-            </Popover.Content>
-        </Popover>
-    );
-
     return (
         <Form onKeyUp={onFormKeyUp} onSubmit={(event) => event.preventDefault()}>
             <Form.Row>
@@ -182,9 +167,15 @@ const UserDiceRollItemForm = (props) => {
                                 faIcon={faMinus}
                                 tooltipText={"Click to remove this dice roll command"}
                             />
-                            <Overlay target={btnDeleteRef.current} show={removeDiceRollPopOverVisible} placement="bottom">
-                                {(props) => removeDiceRollPopover(props)}
-                            </Overlay>
+                            <FormPopoverContainer ref={btnDeleteRef} show={removeDiceRollPopOverVisible} title="Remove Dice Roll Command">
+                                <DeleteConfirmationForm
+                                    onBtnConfirmClick={() => {
+                                        setRemoveDiceRollPopOverVisible(false);
+                                        dispatch(diceRollDeleted(props.set.name, label));
+                                    }}
+                                    onBtnCancelClick={() => setRemoveDiceRollPopOverVisible(false)}
+                                />
+                            </FormPopoverContainer>
                         </ButtonGroup>
                     )
                 }
