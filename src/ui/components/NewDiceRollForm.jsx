@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import InvalidInputFeedbackText from './InvalidInputFeedbackText.jsx'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { diceRollAdded } from '../../reducers/action-creators'
@@ -32,18 +33,14 @@ const NewDiceRollForm = (props) => {
 
     const onTxtAddDiceRollLabelChange = (event) => {
         const { value } = event.target;
-        if (!diceRollLabelChanged) {
-            setDiceRollLabelChanged(true);
-        }
+        !diceRollLabelChanged && setDiceRollLabelChanged(true);
         setDiceRollLabel(value);
         setDiceRollLabelValid(isDiceRollLabelValid(props.set, value));
     }
 
     const onTxtAddDiceRollCommandChange = (event) => {
         const { value } = event.target;
-        if (!diceRollCommandChanged) {
-            setDiceRollCommandChanged(true);
-        }
+        !diceRollCommandChanged && setDiceRollCommandChanged(true);
         setDiceRollCommand(value);
         setDiceRollCommandValid(isDiceRollCommandValid(value));
     }
@@ -78,7 +75,7 @@ const NewDiceRollForm = (props) => {
                     onChange={onTxtAddDiceRollLabelChange}
                     value={diceRollLabel}
                 />
-                <div style={diceRollLabelChanged && !diceRollLabelValid ? { "display": "block" } : { "display": "none" }} className='invalid-feedback'>Dice roll command label should be unique in the set, not be empty, and can´t contain spaces or dots</div>
+                <InvalidInputFeedbackText visible={diceRollLabelChanged && !diceRollLabelValid} text="Dice roll command label should be unique in the set, not be empty, and can´t contain spaces or dots" />
             </Form.Group>
             <Form.Group>
                 <Form.Label size="sm">Command</Form.Label>
@@ -91,7 +88,7 @@ const NewDiceRollForm = (props) => {
                     onChange={onTxtAddDiceRollCommandChange}
                     value={diceRollCommand}
                 />
-                <div style={diceRollCommandChanged && !diceRollCommandValid ? { "display": "block" } : { "display": "none" }} className='invalid-feedback'>Dice roll command should be a valid dice roll command, check docs for examples</div>
+                <InvalidInputFeedbackText visible={diceRollCommandChanged && !diceRollCommandValid} text="Dice roll command should be a valid dice roll command, check docs for examples" />
             </Form.Group>
             <Button variant='outline-success' disabled={!diceRollLabelValid || !diceRollCommandValid} onClick={onBtnConfirmClick} className='btn-fa-circle-tn btn-form-popover'>
                 <FontAwesomeIcon icon={faCheck} />

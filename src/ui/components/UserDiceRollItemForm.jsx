@@ -5,6 +5,7 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ButtonWithTolltip from './ButtonWithTolltip.jsx';
 import Overlay from 'react-bootstrap/Overlay';
 import Popover from 'react-bootstrap/Popover';
+import InvalidInputFeedbackText from './InvalidInputFeedbackText.jsx';
 import { faEdit, faCheck, faTimes, faMinus, faDice } from '@fortawesome/free-solid-svg-icons';
 import DeleteConfirmationForm from './DeleteConfirmationForm.jsx';
 import { isDiceRollLabelValid, isDiceRollCommandValid } from '../../models/dice-roll-utils.js'
@@ -122,7 +123,7 @@ const UserDiceRollItemForm = (props) => {
                         value={label}
                         onChange={onLabelChange}
                     />
-                    <div style={didLabelChange && !isLabelValid ? { "display": "block" } : { "display": "none" }} className='invalid-feedback'>Dice roll command label should be unique in the set, not be empty, and can't contain spaces or dots</div>
+                    <InvalidInputFeedbackText visible={didLabelChange && !isLabelValid} text="Dice roll command label should be unique in the set, not be empty, and can't contain spaces or dots" />
                 </Form.Group>
                 <Form.Group as={Col} sm={6} controlId="diceCmd" style={{ marginBottom: "5px" }}>
                     <Form.Control
@@ -134,7 +135,7 @@ const UserDiceRollItemForm = (props) => {
                         value={command}
                         onChange={onCommandChange}
                     />
-                    <div style={didCommandChange && !isCommandValid ? { "display": "block" } : { "display": "none" }} className='invalid-feedback'>Dice roll command should be a valid dice roll command, check docs for examples</div>
+                    <InvalidInputFeedbackText visible={didCommandChange && !isCommandValid} text="Dice roll command should be a valid dice roll command, check docs for examples" />
                 </Form.Group>
                 {isEditing ?
                     (

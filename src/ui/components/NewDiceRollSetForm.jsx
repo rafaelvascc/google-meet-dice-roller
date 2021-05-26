@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import InvalidInputFeedbackText from './InvalidInputFeedbackText.jsx';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -10,6 +11,7 @@ const NewDiceRollSetForm = (props) => {
     const dispatch = useDispatch();
     const diceRollCollection = useSelector(state => state);
     const [newDiceRollSetName, setNewDiceRollSetName] = useState('');
+    const [newDiceRollSetNameChanged, setNewDiceRollSetNameChanged] = useState(false);
     const [newDiceRollSetNameValid, setNewDiceRollSetNameValid] = useState(true);
 
     const onBtnConfirmClick = (event) => {
@@ -25,6 +27,7 @@ const NewDiceRollSetForm = (props) => {
 
     const onTxtNewDiceRollSetNameChange = (event) => {
         const { value } = event.target;
+        !newDiceRollSetNameChanged && setNewDiceRollSetNameChanged(true);
         setNewDiceRollSetName(value);
     }
 
@@ -37,14 +40,7 @@ const NewDiceRollSetForm = (props) => {
     }
 
     const validateNewDiceRollSetName = (value) => {
-        //Early exit
-        if (!value) {
-            setNewDiceRollSetNameValid(false);
-            return;
-        }
-
-        const isUnique = !hasDiceRollSet(value);
-        setNewDiceRollSetNameValid(isUnique);
+        setNewDiceRollSetNameValid(!!value && !hasDiceRollSet(value));
     }
 
     const hasDiceRollSet = (name) => {
@@ -68,9 +64,9 @@ const NewDiceRollSetForm = (props) => {
                     placeholder='Set Name'
                     value={newDiceRollSetName}
                     onChange={onTxtNewDiceRollSetNameChange}
-                    isValid={newDiceRollSetNameValid}
+                    isValid={newDiceRollSetNameChanged && newDiceRollSetNameValid}
                 />
-                <Form.Control.Feedback type='invalid'>Set name should be unique and not be empty</Form.Control.Feedback>
+                <InvalidInputFeedbackText visible={newDiceRollSetNameChanged && !newDiceRollSetNameValid} text="Set name should be unique and not be empty" />
             </Form.Group>
             <Button variant='outline-success' disabled={!newDiceRollSetNameValid} onClick={onBtnConfirmClick} className='btn-fa-circle-tn btn-form-popover'>
                 <FontAwesomeIcon icon={faCheck} />
