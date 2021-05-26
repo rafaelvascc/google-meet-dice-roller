@@ -2,10 +2,9 @@ import React, { useState, useRef } from 'react';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ButtonWithTolltip from './ButtonWithTolltip.jsx';
 import Accordion from 'react-bootstrap/Accordion';
-import Popover from 'react-bootstrap/Popover';
-import Overlay from 'react-bootstrap/Overlay';
 import Card from 'react-bootstrap/Card';
 import UserDiceRollItemForm from './UserDiceRollItemForm.jsx';
+import FormPopoverContainer from './FormPopoverContainer.jsx';
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 import NewDiceRollForm from './NewDiceRollForm.jsx';
 import DeleteConfirmationForm from './DeleteConfirmationForm.jsx'
@@ -37,29 +36,6 @@ const DiceRollSetCard = (props) => {
         setRemoveSetPopoverVisible(!removeSetPopoverVisible);
     }
 
-    const removeDiceRollSetPopover = (innerProps) => (
-        <Popover onClick={(event) => event.stopPropagation()} id='popover-basic' {...innerProps}>
-            <Popover.Title as='h3'>Remove Dice Roll Set</Popover.Title>
-            <Popover.Content>
-                <DeleteConfirmationForm
-                    onBtnConfirmClick={() => {
-                        setRemoveSetPopoverVisible(false);
-                        dispatch(diceRollSetDeleted(props.set.name));
-                    }}
-                    onBtnCancelClick={() => setRemoveSetPopoverVisible(false)} />
-            </Popover.Content>
-        </Popover>
-    );
-
-    const addDicePopover = (innerProps) => (
-        <Popover onClick={(event) => event.stopPropagation()} id='popover-basic' {...innerProps}>
-            <Popover.Title as='h3'>Add Dice Roll To Set</Popover.Title>
-            <Popover.Content>
-                <NewDiceRollForm set={props.set} onBtnConfirmClick={() => setAddDiceRollPopoverVisible(false)} onBtnCancelClick={() => setAddDiceRollPopoverVisible(false)} />
-            </Popover.Content>
-        </Popover>
-    );
-
     return (
         <Card>
             <Accordion.Toggle className="dice-set-header" as={Card.Header} eventKey={props.index.toString()}>
@@ -83,12 +59,18 @@ const DiceRollSetCard = (props) => {
                         tooltipText={"Click to remove this dice roll set"}
                     />
                 </ButtonGroup>
-                <Overlay target={addDiceRollPopoverBtnRef.current} show={addDiceRollPopoverVisible} placement="bottom">
-                    {(props) => addDicePopover(props)}
-                </Overlay>
-                <Overlay target={removeSetPopoverBtnRef.current} show={removeSetPopoverVisible} placement="bottom">
-                    {(props) => removeDiceRollSetPopover(props)}
-                </Overlay>
+                <FormPopoverContainer ref={addDiceRollPopoverBtnRef} show={addDiceRollPopoverVisible} title="Add Dice Roll To Set">
+                    <NewDiceRollForm set={props.set} onBtnConfirmClick={() => setAddDiceRollPopoverVisible(false)} onBtnCancelClick={() => setAddDiceRollPopoverVisible(false)} />
+                </FormPopoverContainer>
+                <FormPopoverContainer ref={removeSetPopoverBtnRef} show={removeSetPopoverVisible} title="Remove Dice Roll Set">
+                    <DeleteConfirmationForm
+                        onBtnConfirmClick={() => {
+                            setRemoveSetPopoverVisible(false);
+                            dispatch(diceRollSetDeleted(props.set.name));
+                        }}
+                        onBtnCancelClick={() => setRemoveSetPopoverVisible(false)}
+                    />
+                </FormPopoverContainer>
             </Accordion.Toggle>
             <Accordion.Collapse eventKey={props.index.toString()}>
                 <Card.Body style={{ paddingTop: "8px", paddingBottom: "8px", paddingRight: "16px", paddingLeft: "16px" }}>

@@ -1,29 +1,17 @@
 import React, { useState, useRef } from 'react';
 import { useSelector } from 'react-redux'
 import Navbar from 'react-bootstrap/Navbar';
-import Overlay from 'react-bootstrap/Overlay';
 import Accordion from 'react-bootstrap/Accordion';
-import Popover from 'react-bootstrap/Popover';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import NewDiceRollSetForm from './NewDiceRollSetForm.jsx';
 import DiceRollSetCard from './DiceRollSetCard.jsx';
 import ButtonWithTolltip from './ButtonWithTolltip.jsx';
+import FormPopoverContainer from './FormPopoverContainer.jsx';
 
 const DiceSetList = (props) => {
     const diceRollCollection = useSelector(state => state);
     const [newSetPopoverVisible, setNewSetPopoverVisible] = useState(false);
     const newSetPopoverBtnRef = useRef(null);
-
-    const newDiceRollSetPopover = (props) => {
-        return (
-            <Popover id='popover-basic' {...props}>
-                <Popover.Title as='h3'>New Dice Roll Set</Popover.Title>
-                <Popover.Content>
-                    <NewDiceRollSetForm onBtnConfirmClick={() => setNewSetPopoverVisible(false)} onBtnCancelClick={() => setNewSetPopoverVisible(false)} />
-                </Popover.Content>
-            </Popover>
-        )
-    }
 
     return (
         <>
@@ -37,9 +25,9 @@ const DiceSetList = (props) => {
                     faIcon={faPlus}
                     tooltipText={"Click to create a new dice roll set"}
                 />
-                <Overlay target={newSetPopoverBtnRef.current} show={newSetPopoverVisible} placement="bottom">
-                    {(props) => newDiceRollSetPopover(props)}
-                </Overlay>
+                <FormPopoverContainer ref={newSetPopoverBtnRef} show={newSetPopoverVisible} title="New Dice Roll Set">
+                    <NewDiceRollSetForm onBtnConfirmClick={() => setNewSetPopoverVisible(false)} onBtnCancelClick={() => setNewSetPopoverVisible(false)} />
+                </FormPopoverContainer>
             </Navbar>
             {
                 diceRollCollection.length > 0 &&
