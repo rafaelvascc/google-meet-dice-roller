@@ -42,7 +42,7 @@ export const isDiceRollCommandValid = (command) => {
 }
 
 export const isCollectonValid = (diceRollCollection) => {
-    if (!diceRollCollection || typeof (diceRollCollection) !== "object") {
+    if (!diceRollCollection || typeof diceRollCollection !== "object") {
         return [false, "Collection is null, undefined or not an object"];
     }
 
@@ -64,11 +64,10 @@ export const isCollectonValid = (diceRollCollection) => {
 }
 
 export const areSetItemsValid = (set, setName) => {
-    if (!set.commands || typeof (set.commands) !== "object") {
+    if (!set.commands || typeof set.commands !== "object") {
         return [false, `The 'commands' property of set ${setName} is null, undefined or not an object.`];
     }
-
-    for (const commandLabel of set.commands) {
+    for (const commandLabel in set.commands) {
         if (isSetNameOrRollLabelValid(commandLabel)) {
             if (!isDiceRollCommandValid(set.commands[commandLabel])) {
                 return [false, `Dice roll item command ${commandLabel}/${set.commands[commandLabel]} in set ${setName} isn't valid.`];
