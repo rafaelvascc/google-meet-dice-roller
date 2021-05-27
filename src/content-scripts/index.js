@@ -2,32 +2,15 @@ import DiceRollResultSet from '../models/dice-roll-result-set'
 
 var sets = {};
 
-function setsArrayToHashSet(setsInStorage) {
-    for (var i = 0; i < setsInStorage.length; i++) {
-        var set = setsInStorage[i];
-        sets[set.name] = {};
-        if (set.items && set.items.length > 0) {
-            for (var j = 0; j < set.items.length; j++) {
-                var item = set.items[j];
-                sets[set.name][item.label] = item.command;
-            }
-        }
-    }
-}
-
 if (chrome && chrome.storage) {
     chrome.storage.sync.get(["gmdrsets"], function (result) {
-        var setsInStorage = result["gmdrsets"];
-        if (setsInStorage && setsInStorage.length > 0) {
-            setsArrayToHashSet(setsInStorage);
-        }
+        sets = result["gmdrsets"] || {};
     });
 
     chrome.storage.onChanged.addListener(function (changes) {
         var newSetsInStorage = changes["gmdrsets"];
         if (newSetsInStorage && newSetsInStorage["newValue"]) {
-            sets = {}
-            setsArrayToHashSet(newSetsInStorage["newValue"]);
+            sets = newSetsInStorage["newValue"]
         }
     });
 }
@@ -74,7 +57,7 @@ document.addEventListener("keydown", event => {
         if (tokens.length === 2) {
             var set = sets[tokens[0]];
             if (set) {
-                var command = set[tokens[1]];
+                var command = set["commands"][tokens[1]];
                 if (command) {
                     const result = DiceRollResultSet.fromUserCommandLine(command);
                     event.target.value = result ? result.asPresentationString(rollLabel) : event.target.value;

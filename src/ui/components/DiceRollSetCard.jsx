@@ -38,8 +38,8 @@ const DiceRollSetCard = (props) => {
 
     return (
         <Card>
-            <Accordion.Toggle className="dice-set-header" as={Card.Header} eventKey={props.index.toString()}>
-                {props.set.name}
+            <Accordion.Toggle className="dice-set-header" as={Card.Header} eventKey={props.setName}>
+                {props.setName}
                 <ButtonGroup>
                     <ButtonWithTolltip
                         style={{ marginRight: "5px" }}
@@ -60,19 +60,19 @@ const DiceRollSetCard = (props) => {
                     />
                 </ButtonGroup>
                 <FormPopoverContainer ref={addDiceRollPopoverBtnRef} show={addDiceRollPopoverVisible} title="Add Dice Roll To Set">
-                    <NewDiceRollForm set={props.set} onBtnConfirmClick={() => setAddDiceRollPopoverVisible(false)} onBtnCancelClick={() => setAddDiceRollPopoverVisible(false)} />
+                    <NewDiceRollForm setName={props.setName} set={props.set} onBtnConfirmClick={() => setAddDiceRollPopoverVisible(false)} onBtnCancelClick={() => setAddDiceRollPopoverVisible(false)} />
                 </FormPopoverContainer>
                 <FormPopoverContainer ref={removeSetPopoverBtnRef} show={removeSetPopoverVisible} title="Remove Dice Roll Set">
                     <DeleteConfirmationForm
                         onBtnConfirmClick={() => {
                             setRemoveSetPopoverVisible(false);
-                            dispatch(diceRollSetDeleted(props.set.name));
+                            dispatch(diceRollSetDeleted(props.setName));
                         }}
                         onBtnCancelClick={() => setRemoveSetPopoverVisible(false)}
                     />
                 </FormPopoverContainer>
             </Accordion.Toggle>
-            <Accordion.Collapse eventKey={props.index.toString()}>
+            <Accordion.Collapse eventKey={props.setName}>
                 <Card.Body style={{ paddingTop: "8px", paddingBottom: "8px", paddingRight: "16px", paddingLeft: "16px" }}>
                     <Form.Row style={{ marginBottom: "0px" }}>
                         <Form.Group as={Col} sm={4} controlId="diceLabel" style={{ marginBottom: "0px" }}>
@@ -82,11 +82,13 @@ const DiceRollSetCard = (props) => {
                             <Form.Label>Command</Form.Label>
                         </Form.Group>
                     </Form.Row>
-                    {props.set.items.length > 0 && props.set.items.map((item, i) => {
-                        return (
-                            <UserDiceRollItemForm key={item.label} set={props.set} item={item} index={i} />
-                        )
-                    })}
+                    {
+                        Object.keys(props.set.commands).map((k) => {
+                            return (
+                                <UserDiceRollItemForm key={k} setName={props.setName} set={props.set} label={k} command={props.set.commands[k]} />
+                            )
+                        })
+                    }
                 </Card.Body>
             </Accordion.Collapse>
         </Card>

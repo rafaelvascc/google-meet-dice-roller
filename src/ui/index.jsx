@@ -11,36 +11,36 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const store = createStore(appReducer);
 
 const renderApp = () => {
-  ReactDOM.render(
-    <React.StrictMode>
-      <Provider store={store}>
-        <App />
-      </Provider>
-    </React.StrictMode>,
-    document.getElementById('root')
-  );
+	ReactDOM.render(
+		<React.StrictMode>
+			<Provider store={store}>
+				<App />
+			</Provider>
+		</React.StrictMode>,
+		document.getElementById('root')
+	);
 }
 
 if (chrome && chrome.storage) {
-  chrome.storage.sync.get(["gmdrsets"], function (results) {
-    store.dispatch(loadDiceRollSets(results["gmdrsets"] || []));
-  });
+	chrome.storage.sync.get(["gmdrsets"], function (results) {
+		store.dispatch(loadDiceRollSets(results["gmdrsets"] || {}));
+	});
 
-  store.subscribe(() => {
-    const state = store.getState();
-    chrome.storage.sync.set({ "gmdrsets": state }, function () { });
-  });
+	store.subscribe(() => {
+		const state = store.getState();
+		chrome.storage.sync.set({ "gmdrsets": state }, function () { });
+	});
 
-  renderApp();
+	renderApp();
 }
 else {
-  //For development
-  store.dispatch(loadDiceRollSets(JSON.parse(localStorage.getItem("gmdrsets") || "[]")));
+	//For development
+	store.dispatch(loadDiceRollSets(JSON.parse(localStorage.getItem("gmdrsets") || "{}")));
 
-  store.subscribe(() => {
-    const state = store.getState();
-    localStorage.setItem("gmdrsets", JSON.stringify(state));
-  });
-  
-  renderApp();
+	store.subscribe(() => {
+		const state = store.getState();
+		localStorage.setItem("gmdrsets", JSON.stringify(state));
+	});
+
+	renderApp();
 }

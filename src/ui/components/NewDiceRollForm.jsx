@@ -22,7 +22,7 @@ const NewDiceRollForm = (props) => {
 
     const onBtnConfirmClick = (event) => {
         props.onBtnConfirmClick();
-        dispatch(diceRollAdded(props.set.name, diceRollLabel, diceRollCommand));
+        dispatch(diceRollAdded(props.setName, diceRollLabel, diceRollCommand));
         resetAddDiceFormState();
     }
 

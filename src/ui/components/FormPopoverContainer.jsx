@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import Overlay from 'react-bootstrap/Overlay';
 import Popover from 'react-bootstrap/Popover';
 
-const FormPopoverContainer = React.forwardRef((props, ref) => {
+const FormPopoverContainer = forwardRef((props, ref) => {
     return (
         <Overlay target={ref.current} show={props.show === true} placement="bottom-end">
             <Popover onClick={(event) => event.stopPropagation()} id='popover-basic' {...props}>

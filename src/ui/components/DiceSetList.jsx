@@ -30,11 +30,11 @@ const DiceSetList = (props) => {
                 </FormPopoverContainer>
             </Navbar>
             {
-                diceRollCollection.length > 0 &&
                 <Accordion>
-                    {diceRollCollection.map((s, i) => {
+                    {Object.keys(diceRollCollection).map((k) => {
+                        console.log(k, diceRollCollection[k]);
                         return (
-                            <DiceRollSetCard key={s.name} set={s} index={i} />
+                            <DiceRollSetCard key={k} setName={k} set={diceRollCollection[k]} />
                         )
                     })}
                 </Accordion>

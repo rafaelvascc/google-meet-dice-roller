@@ -6,6 +6,7 @@ import Form from 'react-bootstrap/Form';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { diceRollSetAdded } from '../../reducers/action-creators'
+import { isDiceSetNameValid } from '../../models/dice-roll-utils';
 
 const NewDiceRollSetForm = (props) => {
     const dispatch = useDispatch();
@@ -17,8 +18,8 @@ const NewDiceRollSetForm = (props) => {
     const onBtnConfirmClick = (event) => {
         props.onBtnConfirmClick();
         dispatch(diceRollSetAdded(newDiceRollSetName));
-        setNewDiceRollSetName('');
         setNewDiceRollSetNameValid(false);
+        setNewDiceRollSetName('');
     }
 
     const onBtnCancelClick = (event) => {
@@ -40,13 +41,7 @@ const NewDiceRollSetForm = (props) => {
     }
 
     const validateNewDiceRollSetName = (value) => {
-        setNewDiceRollSetNameValid(!!value && !hasDiceRollSet(value));
-    }
-
-    const hasDiceRollSet = (name) => {
-        return diceRollCollection.some(e => {
-            return e.name.toLowerCase().trim() === name.toLowerCase().trim();
-        });
+        setNewDiceRollSetNameValid(isDiceSetNameValid(diceRollCollection, value));
     }
 
     useEffect(() => {
@@ -73,7 +68,7 @@ const NewDiceRollSetForm = (props) => {
             <Button variant='outline-warning' onClick={onBtnCancelClick} className='btn-fa-circle-tn btn-form-popover'>
                 <FontAwesomeIcon icon={faTimes} />
             </Button>
-            <InvalidInputFeedbackText visible={newDiceRollSetNameChanged && !newDiceRollSetNameValid} text="Set name should be unique and not be empty" />
+            <InvalidInputFeedbackText visible={newDiceRollSetNameChanged && !newDiceRollSetNameValid} text="Set name should be unique, not be empty and can't contains dots, white spaces, forward slashes and back slashes" />
         </Form>
     )
 }

@@ -16,10 +16,10 @@ const UserDiceRollItemForm = (props) => {
 
     const [isEditing, setIsEditing] = useState(false);
 
-    const [label, setLabel] = useState(props.item.label);
-    const [command, setCommad] = useState(props.item.command);
-    const [prevLabel, setPrevLabel] = useState(props.item.label);
-    const [prevCommand, setPrevCommad] = useState(props.item.command);
+    const [label, setLabel] = useState(props.label);
+    const [command, setCommad] = useState(props.command);
+    const [prevLabel, setPrevLabel] = useState(props.label);
+    const [prevCommand, setPrevCommad] = useState(props.command);
 
     const [isLabelValid, setIsLabelValid] = useState(true);
     const [isCommandValid, setIsCommandValid] = useState(true);
@@ -39,7 +39,7 @@ const UserDiceRollItemForm = (props) => {
     }
 
     const onBtnConfirmClick = (event) => {
-        dispatch(diceRollEdited(props.set.name, prevLabel, label, command));
+        dispatch(diceRollEdited(props.setName, prevLabel, label, command));
         setPrevLabel(label);
         setPrevCommad(command);
         setDidLabelChange(false);
@@ -66,7 +66,7 @@ const UserDiceRollItemForm = (props) => {
                     var firstMeetTabId = tabs[0].id;
                     chrome.tabs.sendMessage(firstMeetTabId, {
                         type: "onBtnRollClick",
-                        payload: `${props.set.name}.${label}`
+                        payload: `${props.setName}.${label}`
                     });
                 }
             })
@@ -171,7 +171,7 @@ const UserDiceRollItemForm = (props) => {
                                 <DeleteConfirmationForm
                                     onBtnConfirmClick={() => {
                                         setRemoveDiceRollPopOverVisible(false);
-                                        dispatch(diceRollDeleted(props.set.name, label));
+                                        dispatch(diceRollDeleted(props.setName, label));
                                     }}
                                     onBtnCancelClick={() => setRemoveDiceRollPopOverVisible(false)}
                                 />
