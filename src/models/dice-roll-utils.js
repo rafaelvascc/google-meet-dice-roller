@@ -1,7 +1,7 @@
 
 import { commandRegex } from '../constants/regular-expressions';
 
-const isSetNameOrRollLabelValid = (nameOrLabel) => {
+const isSetNameOrLabelValid = (nameOrLabel) => {
     return !!nameOrLabel &&
         nameOrLabel.indexOf(".") < 0 &&
         nameOrLabel.indexOf("\\") < 0 &&
@@ -17,20 +17,31 @@ export const sortHashTable = (obj) => {
 
 export const isDiceSetNameValid = (collection, name, originalName) => {
     return (
-        isSetNameOrRollLabelValid(name) &&
+        isSetNameOrLabelValid(name) &&
         !diceRollCollectionHasDiceRollSet(collection, name)
     ) || (!!originalName && name === originalName);
 }
 
 export const isDiceRollLabelValid = (set, label, originalLabel) => {
     return (
-        isSetNameOrRollLabelValid(label) &&
+        isSetNameOrLabelValid(label) &&
         !diceRollSetHasDiceRollItem(set, label)
+    ) || (!!originalLabel && label === originalLabel);
+}
+
+export const isVariableLabelValid = (set, label, originalLabel) => {
+    return (
+        isSetNameOrLabelValid(label) &&
+        !diceRollSetHasVariable(set, label)
     ) || (!!originalLabel && label === originalLabel);
 }
 
 export const diceRollSetHasDiceRollItem = (set, label) => {
     return !!set["commands"][label];
+}
+
+export const diceRollSetHasVariable = (set, label) => {
+    return !!set["variables"][label];
 }
 
 export const diceRollCollectionHasDiceRollSet = (collection, setName) => {
@@ -47,7 +58,7 @@ export const isCollectonValid = (diceRollCollection) => {
     }
 
     for (const setName in diceRollCollection) {
-        if (isSetNameOrRollLabelValid(setName)) {
+        if (isSetNameOrLabelValid(setName)) {
             const set = diceRollCollection[setName];
             const result = areSetItemsValid(set, setName);
 
@@ -68,7 +79,7 @@ export const areSetItemsValid = (set, setName) => {
         return [false, `The 'commands' property of set ${setName} is null, undefined or not an object.`];
     }
     for (const commandLabel in set.commands) {
-        if (isSetNameOrRollLabelValid(commandLabel)) {
+        if (isSetNameOrLabelValid(commandLabel)) {
             if (!isDiceRollCommandValid(set.commands[commandLabel])) {
                 return [false, `Dice roll item command ${commandLabel}/${set.commands[commandLabel]} in set ${setName} isn't valid.`];
             }
@@ -93,13 +104,20 @@ export const mergeCollections = (existingCollection, newCollection, replaceExist
                 }
             }
 
+            for (const label in newSet["variables"]) {
+                if (!existingSet["variables"][label] || (existingSet["variables"][label] && replaceExisting)) {
+                    existingSet["variables"][label] = newSet["variables"][label];
+                }
+            }
+
             existingSet["commands"] = sortHashTable(existingSet["commands"]);
+            existingSet["variables"] = sortHashTable(existingSet["variables"]);
         }
         else {
             existingCollection[key] = newCollection[key];
         }
     }
-    return sortHashTable(existingSet);
+    return sortHashTable(existingCollection);
 }
 
 export const cloneCollection = (collection) => {

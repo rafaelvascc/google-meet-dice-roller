@@ -1,5 +1,6 @@
 import { 
     LOAD_DICE_ROLL_SETS,
+    IMPORT_DICE_ROLL_SETS,
     ADD_DICE_ROLL_SET, 
     DELETE_DICE_ROLL_SET, 
     ADD_DICE_ROLL, 
@@ -10,6 +11,13 @@ import {
 export const loadDiceRollSets = (sets) => {
     return {
         type: LOAD_DICE_ROLL_SETS,
+        payload: sets
+    }
+}
+
+export const importDiceRollSets = (sets) => {
+    return {
+        type: IMPORT_DICE_ROLL_SETS,
         payload: sets
     }
 }

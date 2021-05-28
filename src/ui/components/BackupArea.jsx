@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import Collapse from 'react-bootstrap/Collapse';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
@@ -8,10 +8,13 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ButtonWithTolltip from './ButtonWithTolltip.jsx';
 import JSONPretty from 'react-json-pretty';
 import InvalidInputFeedbackText from './InvalidInputFeedbackText.jsx'
+import { importDiceRollSets } from '../../reducers/action-creators';
 import { isCollectonValid } from '../../models/dice-roll-utils'
 
 const BackupArea = (props) => {
+    const dispatch = useDispatch();
     const diceRollCollection = useSelector(state => state);
+    const [restoreTxt, setRestoreTxt] = useState('');
     const [restoreTxtChanged, setRestoreTxtChanged] = useState(false);
     const [isRestoreValid, setIsRestoreValid] = useState(false);
     const [restoreValidationError, setRestoreValidationError] = useState('');
@@ -27,11 +30,12 @@ const BackupArea = (props) => {
             try {
                 const [restoreValid, error] = isCollectonValid(JSON.parse(value));
                 setIsRestoreValid(restoreValid);
-                if (!restoreValid) {
-                    setRestoreValidationError(error);
+                if (restoreValid) {
+                    setRestoreValidationError('');
+                    setRestoreTxt(value);
                 }
                 else {
-                    setRestoreValidationError('');
+                    setRestoreValidationError(error);
                 }
             }
             catch (err) {
@@ -42,7 +46,8 @@ const BackupArea = (props) => {
     }
 
     const onBtnConfirmClick = (event) => {
-
+        dispatch(importDiceRollSets(JSON.parse(restoreTxt)));
+        setRestoreTxtChanged(false);
     }
 
     return (
