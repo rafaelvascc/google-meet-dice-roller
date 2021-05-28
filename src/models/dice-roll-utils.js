@@ -101,3 +101,14 @@ export const mergeCollections = (existingCollection, newCollection, replaceExist
     }
     return sortHashTable(existingSet);
 }
+
+export const cloneCollection = (collection) => {
+    const clone = {}
+    for (const key in collection) {
+        clone[key] = {
+            variables: {...collection[key].variables},
+            commands: {...collection[key].commands}
+        }
+    }
+    return clone;
+}
