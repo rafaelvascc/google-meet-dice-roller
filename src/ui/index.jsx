@@ -3,20 +3,21 @@ import ReactDOM from 'react-dom';
 import App from './components/App.jsx';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import appReducer from '../reducers/app-reducer.js'
-import { loadDiceRollSets } from '../reducers/action-creators.js'
+import ReactNotification from 'react-notifications-component';
+import appReducer from '../reducers/app-reducer.js';
+import { loadDiceRollSets } from '../reducers/action-creators.js';
 import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'react-notifications-component/dist/theme.css';
 
 const store = createStore(appReducer);
 
 const renderApp = () => {
 	ReactDOM.render(
-		<React.StrictMode>
-			<Provider store={store}>
-				<App />
-			</Provider>
-		</React.StrictMode>,
+		<Provider store={store}>
+			<ReactNotification />
+			<App />
+		</Provider>,
 		document.getElementById('root')
 	);
 }

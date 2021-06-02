@@ -58,8 +58,9 @@ document.addEventListener("keydown", event => {
             var set = sets[tokens[0]];
             if (set) {
                 var command = set["commands"][tokens[1]];
+                var variables = set["variables"];
                 if (command) {
-                    const result = DiceRollResultSet.fromUserCommandLine(command);
+                    const result = DiceRollResultSet.fromUserCommandLine(command, variables);
                     event.target.value = result ? result.asPresentationString(rollLabel) : event.target.value;
                 }
             }

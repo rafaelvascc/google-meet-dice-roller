@@ -1,6 +1,8 @@
 import DiceRollCommand from './dice-roll-command';
 import DiceRollResult from './dice-roll-result';
-import { diceRegex, constRegex } from '../constants/regular-expressions';
+import { execVariable } from './dice-roll-utils';
+import { diceCommandRegexNoGlobal, constOnlyRegexNoGlobal, variableLabelInExpressionRegex } from '../constants/regular-expressions';
+import math from 'mathjs-expression-parser';
 
 /** @class DiceRollResult represents a set dice roll results after processing many DiceRollCommands and possibly a constant for addind/subtracting from the final result.*/
 class DiceRollResultSet {
@@ -8,10 +10,10 @@ class DiceRollResultSet {
      * @constructor
      * @param {String} input The full /r or 'roll' command line typed by the user.
      */
-    constructor(input) {
+    constructor(input, variables) {
         this.results = [];
         this.constant = 0;
-        this.processUserInput(input);
+        this.processUserInput(input, variables);
     }
 
     /**
@@ -19,30 +21,74 @@ class DiceRollResultSet {
      * 
      * @param {String} input The full /r or 'roll' command line from the user.
      */
-    processUserInput = (input) => {
+    processUserInput = (input, variables) => {
         if (!input) return;
 
         const tokens = input.split(' ');
 
         for (const token of tokens) {
-            if (diceRegex.test(token)) {
-                const diceCmd = DiceRollCommand.fromCommandString(token);
+            const cmd = this.replaceVariables(token, variables, true);
+            if (diceCommandRegexNoGlobal.test(cmd)) {
+                const diceCmd = DiceRollCommand.fromCommandString(cmd);
                 const diceRollResult = DiceRollResult.fromDiceRollCommand(diceCmd);
                 this.results.push(diceRollResult);
             }
-            if (constRegex.test(token)) {
-                const matches = constRegex.exec(token);
+            if (constOnlyRegexNoGlobal.test(cmd)) {
+                const { constExp } = constOnlyRegexNoGlobal.exec(cmd).groups;
+                const retVal = math.eval(constExp);
+                this.constant += retVal;
+            }
+        }
+    }
 
-                if (matches && matches.length && matches[2]) {
-                    if (matches[1] === "+") {
-                        this.constant += parseInt(matches[2]);
+    replaceVariables = (input, variables, root) => {
+        const matches = input.match(variableLabelInExpressionRegex);
+        if (matches && matches[0]) {
+            for (const match of matches) {
+                const variableLabel = match.slice(1, -1);
+                let variable = variables[variableLabel] || "NaN";
+                const variableResult = execVariable(variable, variables);
+                input = input.replaceAll(match, variableResult);
+            }
+            if (root) {
+                if (diceCommandRegexNoGlobal.test(input)) {
+                    let newInput = '';
+                    const subMatches = diceCommandRegexNoGlobal.exec(input);
+                    const {
+                        diceCount,
+                        sides,
+                        constant,
+                        hl,
+                        dm,
+                        tn
+                    } = subMatches.groups;
+                    if (diceCount) {
+                        newInput += (math.eval(diceCount) || NaN) + "d" + sides;
                     }
-                    if (matches[1] === "-") {
-                        this.constant -= parseInt(matches[2]);
+                    if (hl) {
+                        newInput += hl;
                     }
+                    if (dm) {
+                        newInput += dm;
+                    }
+                    if (constant) {
+                        const constOp = constant[0];
+                        const constExp = constOp === '*' ? constant.slice(1) : constant;
+                        newInput += constOp + (math.eval(constExp) || NaN);
+                    }
+                    if (tn) {
+                        newInput += tn;
+                    }
+                    input = newInput;
+                }
+                if (constOnlyRegexNoGlobal.test(input)) {
+                    const { constExp } = constOnlyRegexNoGlobal.exec(input).groups;
+                    const retVal = math.eval(constExp);
+                    input += retVal >= 0 ? `+${retVal}` : retVal;
                 }
             }
         }
+        return input;
     }
 
     /**
@@ -60,12 +106,12 @@ class DiceRollResultSet {
      * @returns {String} The string used to present this object's results to the user.
      */
     asPresentationString = (rollLabel) => {
-        let output = "";
+        let output = rollLabel ? rollLabel + "\n" : "";
         let total = 0;
         if (this.results && this.results.length) {
             for (const result of this.results) {
                 total += result.sum;
-                output += result.asPresentationString(rollLabel);
+                output += result.asPresentationString();
             }
             if (this.results.length > 1 || this.constant !== 0) {
                 output += this.formatTotalResult(total, this.constant);
@@ -81,12 +127,12 @@ class DiceRollResultSet {
      * @param {String} input The user's /r or 'roll' command line.
      * @returns {DiceRollResultSet} The newly created DiceRollResultSet.
      */
-    static fromUserCommandLine = (input) => {
+    static fromUserCommandLine = (input, variables) => {
         if (!input) {
             return null;
         }
         else {
-            return new DiceRollResultSet(input);
+            return new DiceRollResultSet(input, variables || {});
         }
     }
 }

@@ -10,6 +10,8 @@ import DeleteConfirmationForm from './DeleteConfirmationForm.jsx';
 import { isDiceRollLabelValid, isDiceRollCommandValid } from '../../models/dice-roll-utils.js'
 import { useDispatch } from 'react-redux';
 import { diceRollEdited, diceRollDeleted } from '../../reducers/action-creators';
+import DiceRollResultSet from '../../models/dice-roll-result-set';
+import { store } from 'react-notifications-component';
 
 const UserDiceRollItemForm = (props) => {
     const dispatch = useDispatch();
@@ -23,6 +25,7 @@ const UserDiceRollItemForm = (props) => {
 
     const [isLabelValid, setIsLabelValid] = useState(true);
     const [isCommandValid, setIsCommandValid] = useState(true);
+    const [commandValidationMessage, setCommandValidationMessage] = useState('');
     const [didLabelChange, setDidLabelChange] = useState(false);
     const [didCommandChange, setDidCommandChange] = useState(false);
 
@@ -69,8 +72,34 @@ const UserDiceRollItemForm = (props) => {
                         payload: `${props.setName}.${label}`
                     });
                 }
+                else {
+                    showRollDiceResultOnAPopup();
+                }
             })
         }
+        else {
+            showRollDiceResultOnAPopup();
+        }
+    }
+
+    const showRollDiceResultOnAPopup = () => {
+        const cmd = props.set.commands[label];
+        const variables = props.set.variables;
+        const result = DiceRollResultSet.fromUserCommandLine(cmd, variables);
+        const strResult = result.asPresentationString(`${props.setName}.${label}`, true);
+        store.addNotification({
+            title: `${props.setName}.${label}`,
+            message: strResult,
+            type: "info",
+            insert: "top",
+            container: "top-right",
+            animationIn: ["animate__animated", "animate__fadeIn"],
+            animationOut: ["animate__animated", "animate__fadeOut"],
+            dismiss: {
+                duration: 15000,
+                onScreen: true
+            }
+        });
     }
 
     const onLabelChange = (event) => {
@@ -84,7 +113,14 @@ const UserDiceRollItemForm = (props) => {
         const { value } = event.target;
         setCommad(value);
         !didCommandChange && setDidCommandChange(true);
-        setIsCommandValid(isDiceRollCommandValid(value));
+        const [isCommandValid, validationMessage] = isDiceRollCommandValid(value);
+        setIsCommandValid(isCommandValid);
+        if (isCommandValid) {
+            setCommandValidationMessage('');
+        }
+        else {
+            setCommandValidationMessage(validationMessage);
+        }
     }
 
     const onFormKeyUp = (event) => {
@@ -98,7 +134,7 @@ const UserDiceRollItemForm = (props) => {
     return (
         <Form onKeyUp={onFormKeyUp} onSubmit={(event) => event.preventDefault()}>
             <Form.Row>
-                <Form.Group as={Col} sm={4} controlId="diceLabel" style={{ marginBottom: "5px" }}>
+                <Form.Group as={Col} sm={4} style={{ marginBottom: "5px" }}>
                     <Form.Control
                         size="sm"
                         isValid={didLabelChange && isLabelValid}
@@ -110,7 +146,7 @@ const UserDiceRollItemForm = (props) => {
                     />
                     <InvalidInputFeedbackText visible={didLabelChange && !isLabelValid} text="Dice roll command label should be unique in the set, not be empty, and can't contain spaces or dots" />
                 </Form.Group>
-                <Form.Group as={Col} sm={6} controlId="diceCmd" style={{ marginBottom: "5px" }}>
+                <Form.Group as={Col} sm={6} style={{ marginBottom: "5px" }}>
                     <Form.Control
                         size="sm"
                         isValid={didCommandChange && isCommandValid}
@@ -120,7 +156,7 @@ const UserDiceRollItemForm = (props) => {
                         value={command}
                         onChange={onCommandChange}
                     />
-                    <InvalidInputFeedbackText visible={didCommandChange && !isCommandValid} text="Dice roll command should be a valid dice roll command, check docs for examples" />
+                    <InvalidInputFeedbackText visible={didCommandChange && !isCommandValid} text={commandValidationMessage || "Dice roll command should be a valid dice roll command, check docs for examples"} />
                 </Form.Group>
                 {isEditing ?
                     (

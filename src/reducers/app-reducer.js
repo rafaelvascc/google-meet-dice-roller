@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import {
     LOAD_DICE_ROLL_SETS,
     IMPORT_DICE_ROLL_SETS,
@@ -6,7 +5,10 @@ import {
     DELETE_DICE_ROLL_SET,
     ADD_DICE_ROLL,
     DELETE_DICE_ROLL,
-    EDIT_DICE_ROLL
+    EDIT_DICE_ROLL,    
+    ADD_VARIABLE,
+    DELETE_VARIABLE,
+    EDIT_VARIABLE,
 } from './actions.js';
 import { sortHashTable, cloneCollection, mergeCollections } from '../models/dice-roll-utils';
 import UserDiceRollSet from '../models/user-dice-roll-set';
@@ -45,6 +47,23 @@ const appReducer = (state = initialState, action) => {
         }
         case DELETE_DICE_ROLL: {
             delete state[action.payload.setName]["commands"][action.payload.label];
+            return cloneCollection(state);
+        }        
+        case ADD_VARIABLE: {
+            state[action.payload.setName]["variables"][action.payload.label] = action.payload.expression;
+            state[action.payload.setName]["variables"] = sortHashTable(state[action.payload.setName]["variables"]);
+            return cloneCollection(state);
+        }
+        case EDIT_VARIABLE: {
+            state[action.payload.setName]["variables"][action.payload.newLabel] = action.payload.newExpression;
+            if (action.payload.newLabel !== action.payload.oldLabel) {
+                delete state[action.payload.setName]["variables"][action.payload.oldLabel];
+                state[action.payload.setName]["variables"] = sortHashTable(state[action.payload.setName]["variables"]);
+            }
+            return cloneCollection(state);
+        }
+        case DELETE_VARIABLE: {
+            delete state[action.payload.setName]["variables"][action.payload.label];
             return cloneCollection(state);
         }
         default: {

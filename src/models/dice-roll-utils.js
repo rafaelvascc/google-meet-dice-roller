@@ -1,12 +1,34 @@
 
-import { commandRegex } from '../constants/regular-expressions';
+import {
+    commandRegex,
+    labelOrNameRegexNoGlobal,
+    diceCommandRegexNoGlobal,
+    constOnlyRegexNoGlobal,
+    variableRegex,
+    variableLabelInExpressionRegex
+} from '../constants/regular-expressions';
+import math from 'mathjs-expression-parser';
 
 const isSetNameOrLabelValid = (nameOrLabel) => {
-    return !!nameOrLabel &&
-        nameOrLabel.indexOf(".") < 0 &&
-        nameOrLabel.indexOf("\\") < 0 &&
-        nameOrLabel.indexOf("/") < 0 &&
-        nameOrLabel.indexOf(" ") < 0;
+    return !!nameOrLabel && labelOrNameRegexNoGlobal.test(nameOrLabel);
+}
+
+const isInt = (value) => {
+    var x;
+    return isNaN(value) ? !1 : (x = parseFloat(value), (0 | x) === x);
+}
+
+const doesExpressionReturnsAnInteger = (exp) => {
+    try {
+        const clonedText = exp.replaceAll(variableLabelInExpressionRegex, '1');
+        const retVal = math.eval(clonedText);
+        const returnsNumber = typeof retVal === 'number' && isInt(retVal);
+        if (!returnsNumber) return [false, 'Expression should return an interger number'];
+    }
+    catch (err) {
+        return [false, err.message];
+    }
+    return [true, ''];
 }
 
 export const sortHashTable = (obj) => {
@@ -49,7 +71,87 @@ export const diceRollCollectionHasDiceRollSet = (collection, setName) => {
 }
 
 export const isDiceRollCommandValid = (command) => {
-    return command && commandRegex.test(command);
+    const isValidByRegex = command && commandRegex.test(command);
+    if (!isValidByRegex)
+        return [false, 'Dice roll command should not be empty and pass regular expression validation. Check docs/help for details.'];
+
+    command.split(' ').forEach(t => {
+        if (diceCommandRegexNoGlobal.test(t)) {
+            const subMatches = diceCommandRegexNoGlobal.exec(t);
+            const {
+                diceCount,
+                constant
+            } = subMatches.groups;
+
+            const [hasValidDiceCount, diceErrorMessage] = doesExpressionReturnsAnInteger(diceCount);
+            const [hasValidConstant, constErrorMessage] = doesExpressionReturnsAnInteger(constant);
+
+            if (!hasValidDiceCount || !hasValidConstant) {
+                return [false, `Token ${t} has invalid calculation for dice count or constant value. ${diceErrorMessage} ${constErrorMessage}`];
+            }
+        }
+        else if (constOnlyRegexNoGlobal.test(t)) {
+            const subMatches = constOnlyRegexNoGlobal.exec(t);
+            const {
+                constExp
+            } = subMatches.groups;
+            const [hasValidConstant, constErrorMessage] = doesExpressionReturnsAnInteger(constExp);
+            if (!hasValidConstant) {
+                return [false, `Token ${t} has invalid calculation for constant value. ${constErrorMessage}`];
+            }
+        }
+    });
+
+    return [true, ''];
+}
+
+export const isVariableCallingItself = (variableLabel, variableTxt, setVariables) => {
+    const otherVariableLabels = variableTxt.match(variableLabelInExpressionRegex);
+    if (otherVariableLabels && otherVariableLabels[0]) {
+        const uniqueVariableLabels = otherVariableLabels.filter((v, i) => otherVariableLabels.indexOf(v) === i);
+
+        if (otherVariableLabels.indexOf(`{${variableLabel}}`) > -1) {
+            return true;
+        }
+
+        for (const enclosedLabel of uniqueVariableLabels) {
+            const labelOnly = enclosedLabel.slice(1, -1);
+            if (variableLabel === labelOnly) {
+                continue;
+            }
+            const otherVariableTxt = setVariables[labelOnly];
+            if (otherVariableTxt && isVariableCallingItself(variableLabel, otherVariableTxt, setVariables)) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+export const isVariableValid = (variableLabel, variableTxt, otherVariables) => {
+    const isValidByRegex = !!variableTxt && variableRegex.test(variableTxt);
+    if (!isValidByRegex)
+        return [false, 'Variable/Expression should not be empty and pass regular expression validation'];
+
+    if (isVariableCallingItself(variableLabel, variableTxt, otherVariables))
+        return [false, 'Variable/Expression should not call itself or make another variable call itself'];
+
+    return doesExpressionReturnsAnInteger(variableTxt);
+}
+
+export const execVariable = (variableTxt, setVariables) => {
+    const otherVariableLabels = variableTxt.match(variableLabelInExpressionRegex);
+
+    if (otherVariableLabels && otherVariableLabels[0]) {
+        const uniqueVariableLabels = otherVariableLabels.filter((v, i) => otherVariableLabels.indexOf(v) === i);
+        for (const otherVarLabel of uniqueVariableLabels) {
+            const otherVariableText = setVariables[otherVarLabel.slice(1, -1)];
+            const otherVariableResult = execVariable(otherVariableText, setVariables);
+            variableTxt = variableTxt.replaceAll(otherVarLabel, otherVariableResult > 0 ? `+${otherVariableResult}` : otherVariableResult);
+        }
+    }
+
+    return math.eval(variableTxt);
 }
 
 export const isCollectonValid = (diceRollCollection) => {
@@ -124,8 +226,8 @@ export const cloneCollection = (collection) => {
     const clone = {}
     for (const key in collection) {
         clone[key] = {
-            variables: {...collection[key].variables},
-            commands: {...collection[key].commands}
+            variables: { ...collection[key].variables },
+            commands: { ...collection[key].commands }
         }
     }
     return clone;

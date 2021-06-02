@@ -1,4 +1,4 @@
-import { diceRegex } from '../constants/regular-expressions';
+import { diceCommandRegexNoGlobal } from '../constants/regular-expressions';
 
 /** @class DiceRollCommand represents a single dice roll command like '5d6+10'. */
 class DiceRollCommand {
@@ -30,61 +30,72 @@ class DiceRollCommand {
      */
     processCommandString = (commandString) => {
         const cmd = commandString || this.command;
-        if (diceRegex.test(cmd)) {
-            const matches = diceRegex.exec(cmd);
-            for (let i = 1; i <= matches.length; i++) {
-                const subToken = matches[i];
-                if (subToken) {
-                    if (i === 1) {
-                        this.subtract = subToken === '-';
-                        continue;
-                    }
-                    if (i === 2) {
-                        this.rolls = parseInt(subToken);
-                        continue;
-                    }
-                    if (i === 3) {
-                        this.sides = parseInt(subToken);
-                        continue;
-                    }
-                    if (i === 6) {
-                        if (matches[5].toLowerCase() === "l") {
-                            this.keepLower = parseInt(subToken);
-                        }
-                        if (matches[5].toLowerCase() === "h") {
-                            this.keepHigher = parseInt(subToken);
-                        }
-                        continue;
-                    }
-                    if (i === 9) {
-                        if (matches[8].toLowerCase() === "d") {
-                            this.difficulty = parseInt(subToken);
-                        }
-                        if (matches[8].toLowerCase() === "m") {
-                            this.limit = parseInt(subToken);
-                        }
-                        continue;
-                    }
-                    if (i === 12) {
-                        if (matches[11] === "+") {
-                            this.plus = parseInt(subToken);
-                        }
-                        if (matches[11] === "-") {
-                            this.minus = parseInt(subToken);
-                        }
-                        if (matches[11] === "*") {
-                            this.times = parseInt(subToken);
-                        }
-                        continue;
-                    }
-                    if (i === 15) {
-                        if (matches[14].toLowerCase() === "t") {
-                            this.target = parseInt(subToken);
-                        }
-                        if (matches[14].toLowerCase() === "n") {
-                            this.negate = parseInt(subToken);
-                        }
-                    }
+        if (diceCommandRegexNoGlobal.test(cmd)) {
+            const matches = diceCommandRegexNoGlobal.exec(cmd);
+            const {
+                diceCount,
+                sides,
+                constant,
+                constOp,
+                constValue,
+                hl,
+                hlOp,
+                hlVal,
+                dm,
+                dmOp,
+                dmVal,
+                tn,
+                tnOp,
+                tnVal
+            } = matches.groups;
+
+            const intDiceCount = parseInt(diceCount || '1');
+            const intSides = parseInt(sides || '1');
+
+            this.subtract = intDiceCount < 0;
+            this.rolls = intDiceCount < 0 ? intDiceCount * -1 : intDiceCount;
+            this.sides = intSides;
+
+            if (constant) {
+                const intConstant = parseInt(constValue);
+                if (constOp === "+") {
+                    this.plus = intConstant;
+                }
+                if (constOp === "-") {
+                    this.minus = intConstant;
+                }
+                if (constOp === "*") {
+                    this.times = intConstant;
+                }
+            }
+
+            if (hl) {
+                const intHlVal = parseInt(hlVal);
+                if (hlOp === "l") {
+                    this.keepLower = intHlVal;
+                }
+                if (hlOp === "h") {
+                    this.keepHigher = intHlVal;
+                }
+            }
+
+            if (dm) {
+                const intDmVal = parseInt(dmVal);
+                if (dmOp === "d") {
+                    this.difficulty = intDmVal;
+                }
+                if (dmOp === "m") {
+                    this.limit = intDmVal;
+                }
+            }
+
+            if (tn) {
+                const intTnVal = parseInt(tnVal);
+                if (tnOp === "t") {
+                    this.target = intTnVal;
+                }
+                if (tnOp === "n") {
+                    this.negate = intTnVal;
                 }
             }
         }

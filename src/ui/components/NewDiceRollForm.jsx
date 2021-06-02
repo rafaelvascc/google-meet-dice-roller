@@ -5,9 +5,8 @@ import Form from 'react-bootstrap/Form';
 import InvalidInputFeedbackText from './InvalidInputFeedbackText.jsx'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { diceRollAdded } from '../../reducers/action-creators'
-import { isDiceRollLabelValid, isDiceRollCommandValid } from '../../models/dice-roll-utils.js'
-import _ from 'lodash';
+import { diceRollAdded } from '../../reducers/action-creators';
+import { isDiceRollLabelValid, isDiceRollCommandValid } from '../../models/dice-roll-utils.js';
 
 const NewDiceRollForm = (props) => {
     const dispatch = useDispatch();
@@ -17,6 +16,7 @@ const NewDiceRollForm = (props) => {
     const [diceRollLabelChanged, setDiceRollLabelChanged] = useState(false);
 
     const [diceRollCommand, setDiceRollCommand] = useState('');
+    const [commandValidationMessage, setCommandValidationMessage] = useState('');
     const [diceRollCommandValid, setDiceRollCommandValid] = useState(false);
     const [diceRollCommandChanged, setDiceRollCommandChanged] = useState(false);
 
@@ -42,7 +42,14 @@ const NewDiceRollForm = (props) => {
         const { value } = event.target;
         !diceRollCommandChanged && setDiceRollCommandChanged(true);
         setDiceRollCommand(value);
-        setDiceRollCommandValid(isDiceRollCommandValid(value));
+        const [isCommandValid, validationMessage] = isDiceRollCommandValid(value);
+        setDiceRollCommandValid(isCommandValid);
+        if (isCommandValid) {
+            setCommandValidationMessage('');
+        }
+        else {
+            setCommandValidationMessage(validationMessage);
+        }
     }
 
     const resetAddDiceFormState = () => {
@@ -88,7 +95,7 @@ const NewDiceRollForm = (props) => {
                     onChange={onTxtAddDiceRollCommandChange}
                     value={diceRollCommand}
                 />
-                <InvalidInputFeedbackText visible={diceRollCommandChanged && !diceRollCommandValid} text="Dice roll command should be a valid dice roll command, check docs for examples" />
+                <InvalidInputFeedbackText visible={diceRollCommandChanged && !diceRollCommandValid} text={commandValidationMessage || "Dice roll command should be a valid dice roll command, check docs for examples"} />
             </Form.Group>
             <Button variant='outline-success' disabled={!diceRollLabelValid || !diceRollCommandValid} onClick={onBtnConfirmClick} className='btn-fa-circle-tn btn-form-popover'>
                 <FontAwesomeIcon icon={faCheck} />
