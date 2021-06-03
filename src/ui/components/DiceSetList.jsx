@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useSelector } from 'react-redux'
 import Navbar from 'react-bootstrap/Navbar';
 import Accordion from 'react-bootstrap/Accordion';
-import { faPlus, faFileImport, faFileExport } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faFileImport, faFileExport, faDice } from '@fortawesome/free-solid-svg-icons';
 import NewDiceRollSetForm from './NewDiceRollSetForm.jsx';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import DiceRollSetCard from './DiceRollSetCard.jsx';
@@ -43,7 +43,8 @@ const DiceSetList = (props) => {
                         getRefFunc={(ref) => newSetPopoverBtnRef.current = ref.current}
                         onClick={() => setNewSetPopoverVisible(!newSetPopoverVisible)}
                         variant="primary"
-                        faIcon={faPlus}
+                        faCrudIcon={faPlus}
+                        faIcon={faDice}
                         tooltipText={"Click to create a new dice roll set"}
                     />
                     <FormPopoverContainer ref={newSetPopoverBtnRef} show={newSetPopoverVisible} title="New Dice Roll Set">

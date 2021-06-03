@@ -14,6 +14,7 @@ export const diceCommandRegexNoGlobal = new RegExp(`^${diceCommandRegexStr}$`);
 export const constOnlyRegexNoGlobal = new RegExp(`^${constOnlyRegexSrt}$`);
 export const commandRegex = new RegExp(`^((?:${diceCommandRegexStr})|(?:\\s)|(?:${constOnlyRegexSrt}))+$`);
 
-export const variableRegex = /^\-?((Math\.(ceil|floor|round)\(*|\(*))?(\-?\(?(\d+|(\{([^.\s+\-*(){}\[\]/\\]+?)\})))\)*([\+\-\*\/]((Math\.(ceil|floor|round)\(*|\(*))?(\d+|(\{([^.\s+\-*(){}\[\]/\\]+?)\}))\)*)*\)?$/g;
+export const variableRegexStr = `\\(*[+\\-\\*\\/]?\\(*(ceil|floor|round\\()?\\(*[+\\-\\*\\/]?\\(*(\\d+|\\{${labelOrNameRegexStr}?\\})\\)*`;
+export const variableRegex = new RegExp(`^(?:${variableRegexStr})+$`);
 export const variableLabelInExpressionRegex = /\{(?<label>[^.\s+\-*(){}\[\]/\\]+?)\}/g;
 export const variableLabelInExpressionRegexNonGlobal = /\{(?<label>[^.\s+\-*(){}\[\]/\\]+?)\}/;

@@ -146,7 +146,28 @@ const UserVariableForm = (props) => {
                                 getRefFunc={(ref) => btnDeleteRef.current = ref.current}
                                 onClick={() => setRemoveVariableExpressionPopOverVisible(!removeVariableExpressionPopOverVisible)}
                                 variant="danger"
-                                faIcon={faMinus}
+                                faCrudIcon={faMinus}
+                                faIcon={null}
+                                customIcon={
+                                    <svg width="20" height="20" className="svg-inline--fa fa-plus fa-w-14 fa-stack-1x fa-inverse" style={{ position: "absolute", right: "-13px" }}>
+                                        <g>
+                                            <text
+                                                transform="matrix(0.983003 0 0 1.18038 0.00212464 -0.451036)"
+                                                stroke="#000"
+                                                strokeWidth="0"
+                                                fontStyle="italic"
+                                                fontWeight="bold"
+                                                textAnchor="start"
+                                                fontFamily="serif"
+                                                fontSize="14"
+                                                y="12.50646"
+                                                x="0.18556"
+                                                fill="#ffffff">
+                                                    (X)
+                                                </text>
+                                        </g>
+                                    </svg>
+                                }
                                 tooltipText={"Click to remove this dice roll variableExpression"}
                             />
                             <FormPopoverContainer ref={btnDeleteRef} show={removeVariableExpressionPopOverVisible} title="Remove Dice Roll VariableExpression">

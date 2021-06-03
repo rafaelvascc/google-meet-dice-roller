@@ -54,8 +54,19 @@ const ButtonWithTolltip = (props) => {
                         onMouseEnter={onMouseEnter}
                         onMouseLeave={onMouseLeave}
                         variant={props.variant}
-                        className='btn-fa-circle-sm'>
-                        <FontAwesomeIcon style={props.faStyle} icon={props.faIcon} />
+                        className='btn-fa-circle-sm fa-stack'>
+                        {
+                            props.faCrudIcon &&
+                            <>
+                                <FontAwesomeIcon icon={props.faCrudIcon} style={{ fontSize: "10px", left: "-18px" }} className="fa-stack-1x fa-inverse" />
+                                {
+                                    props.faIcon ?
+                                        <FontAwesomeIcon style={{ ...props.faStyle, fontSize: "16px", right: "-10px" }} icon={props.faIcon} className="fa-stack-1x fa-inverse" /> :
+                                        props.customIcon
+                                }
+                            </>
+                        }
+                        {!!!props.faCrudIcon && <FontAwesomeIcon style={{ ...props.faStyle }} icon={props.faIcon} />}
                     </Button>
 
             }

@@ -5,7 +5,7 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ButtonWithTolltip from './ButtonWithTolltip.jsx';
 import InvalidInputFeedbackText from './InvalidInputFeedbackText.jsx';
 import FormPopoverContainer from './FormPopoverContainer.jsx';
-import { faEdit, faCheck, faTimes, faMinus, faDice } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faCheck, faTimes, faMinus, faDice, faSync, faDiceD20 } from '@fortawesome/free-solid-svg-icons';
 import DeleteConfirmationForm from './DeleteConfirmationForm.jsx';
 import { isDiceRollLabelValid, isDiceRollCommandValid } from '../../models/dice-roll-utils.js'
 import { useDispatch } from 'react-redux';
@@ -183,7 +183,8 @@ const UserDiceRollItemForm = (props) => {
                                 style={{ marginRight: "5px" }}
                                 onClick={onBtnRollClick}
                                 variant="primary"
-                                faIcon={faDice}
+                                faCrudIcon={faSync}
+                                faIcon={faDiceD20}
                                 faStyle={{ fontSize: "16px" }}
                                 tooltipText={"Roll dice!"}
                             />
@@ -200,7 +201,8 @@ const UserDiceRollItemForm = (props) => {
                                 getRefFunc={(ref) => btnDeleteRef.current = ref.current}
                                 onClick={() => setRemoveDiceRollPopOverVisible(!removeDiceRollPopOverVisible)}
                                 variant="danger"
-                                faIcon={faMinus}
+                                faCrudIcon={faMinus}
+                                faIcon={faDiceD20}
                                 tooltipText={"Click to remove this dice roll command"}
                             />
                             <FormPopoverContainer ref={btnDeleteRef} show={removeDiceRollPopOverVisible} title="Remove Dice Roll Command">

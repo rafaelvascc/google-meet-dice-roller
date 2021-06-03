@@ -5,10 +5,9 @@ import Accordion from 'react-bootstrap/Accordion';
 import Card from 'react-bootstrap/Card';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
-import Container from 'react-bootstrap/Container';
 import UserDiceRollItemForm from './UserDiceRollItemForm.jsx';
 import FormPopoverContainer from './FormPopoverContainer.jsx';
-import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faMinus, faDiceD20, faDice } from '@fortawesome/free-solid-svg-icons';
 import NewDiceRollForm from './NewDiceRollForm.jsx';
 import NewVariableForm from './NewVariableForm.jsx';
 import UserVariableForm from './UserVariableForm.jsx';
@@ -65,8 +64,29 @@ const DiceRollSetCard = (props) => {
                         showTooltip={!addVariablePopoverVisible}
                         getRefFunc={(ref) => addVariablePopoverBtnRef.current = ref.current}
                         onClick={onBtnAddVariableClick}
-                        variant="success"
-                        faIcon={faPlus}
+                        variant="primary"
+                        faCrudIcon={faPlus}
+                        faIcon={null}
+                        customIcon={
+                            <svg width="20" height="20" className="svg-inline--fa fa-plus fa-w-14 fa-stack-1x fa-inverse" style={{ position: "absolute", right: "-13px" }}>
+                                <g>
+                                    <text
+                                        transform="matrix(0.983003 0 0 1.18038 0.00212464 -0.451036)"
+                                        stroke="#000"
+                                        strokeWidth="0"
+                                        fontStyle="italic"
+                                        fontWeight="bold"
+                                        textAnchor="start"
+                                        fontFamily="serif"
+                                        fontSize="14"
+                                        y="12.50646"
+                                        x="0.18556"
+                                        fill="#ffffff">
+                                            (X)
+                                        </text>
+                                </g>
+                            </svg>
+                        }
                         tooltipText={"Click to add a variable to this dice roll set"}
                     />
                     <ButtonWithTolltip
@@ -74,8 +94,9 @@ const DiceRollSetCard = (props) => {
                         showTooltip={!addDiceRollPopoverVisible}
                         getRefFunc={(ref) => addDiceRollPopoverBtnRef.current = ref.current}
                         onClick={onBtnAddCommandClick}
-                        variant="primary"
-                        faIcon={faPlus}
+                        variant="success"
+                        faCrudIcon={faPlus}
+                        faIcon={faDiceD20}
                         tooltipText={"Click to add a dice roll command to this dice roll set"}
                     />
                     <ButtonWithTolltip
@@ -83,7 +104,8 @@ const DiceRollSetCard = (props) => {
                         getRefFunc={(ref) => removeSetPopoverBtnRef.current = ref.current}
                         onClick={onBtnRemoveSetClick}
                         variant="danger"
-                        faIcon={faMinus}
+                        faCrudIcon={faMinus}
+                        faIcon={faDice}
                         tooltipText={"Click to remove this dice roll set"}
                     />
                 </ButtonGroup>
@@ -105,7 +127,7 @@ const DiceRollSetCard = (props) => {
             </Accordion.Toggle>
             <Accordion.Collapse eventKey={props.setName}>
                 <Card.Body style={{ paddingTop: "8px", paddingBottom: "8px", paddingRight: "16px", paddingLeft: "16px" }}>
-                    <Tabs defaultActiveKey="commands" id={`tabs-${props.setName}`}  style={{marginLeft: "auto"}} className="nav-pills">
+                    <Tabs defaultActiveKey="commands" id={`tabs-${props.setName}`} style={{ marginLeft: "auto" }} className="nav-pills">
                         <Tab eventKey="commands" title="Commands">
                             <Form.Row style={{ marginBottom: "0px", marginTop: "16px" }}>
                                 <Form.Group as={Col} sm={4} controlId="commandLabelHeader" style={{ marginBottom: "0px" }}>
