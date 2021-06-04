@@ -5,9 +5,9 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ButtonWithTolltip from './ButtonWithTolltip.jsx';
 import InvalidInputFeedbackText from './InvalidInputFeedbackText.jsx';
 import FormPopoverContainer from './FormPopoverContainer.jsx';
-import { faEdit, faCheck, faTimes, faMinus, faDice } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faCheck, faTimes, faMinus } from '@fortawesome/free-solid-svg-icons';
 import DeleteConfirmationForm from './DeleteConfirmationForm.jsx';
-import { isVariableLabelValid, isVariableValid } from '../../models/dice-roll-utils.js'
+import { isVariableLabelValid, isVariableValid, areAllVariablesValid } from '../../models/dice-roll-utils.js'
 import { useDispatch } from 'react-redux';
 import { variableEdited, variableDeleted } from '../../reducers/action-creators';
 
@@ -17,7 +17,7 @@ const UserVariableForm = (props) => {
     const [isEditing, setIsEditing] = useState(false);
 
     const [label, setLabel] = useState(props.label);
-    const [variableExpression, setCommad] = useState(props.expression);
+    const [variableExpression, setVariable] = useState(props.expression);
     const [prevLabel, setPrevLabel] = useState(props.label);
     const [prevVariableExpression, setPrevCommad] = useState(props.expression);
 
@@ -50,7 +50,7 @@ const UserVariableForm = (props) => {
 
     const onBtnCancelClick = (event) => {
         setLabel(prevLabel);
-        setCommad(prevVariableExpression);
+        setVariable(prevVariableExpression);
         setDidLabelChange(false);
         setDidVariableExpressionChange(false);
         setIsEditing(false);
@@ -65,7 +65,7 @@ const UserVariableForm = (props) => {
 
     const onVariableExpressionChange = (event) => {
         const { value } = event.target;
-        setCommad(value);
+        setVariable(value);
         !didVariableExpressionChange && setDidVariableExpressionChange(true);
         var [isValid, validationMessage] = isVariableValid(label, value, props.set.variables);
         setIsVariableExpressionValid(isValid);
@@ -163,7 +163,7 @@ const UserVariableForm = (props) => {
                                                 y="12.50646"
                                                 x="0.18556"
                                                 fill="#ffffff">
-                                                    (X)
+                                                (X)
                                                 </text>
                                         </g>
                                     </svg>

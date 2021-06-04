@@ -18,19 +18,6 @@ const isInt = (value) => {
     return isNaN(value) ? !1 : (x = parseFloat(value), (0 | x) === x);
 }
 
-const doesExpressionReturnsAnInteger = (exp) => {
-    try {
-        const clonedText = exp.replaceAll(variableLabelInExpressionRegex, '1');
-        const retVal = math.eval(clonedText);
-        const returnsNumber = typeof retVal === 'number' && isInt(retVal);
-        if (!returnsNumber) return [false, 'Expression should return an interger number'];
-    }
-    catch (err) {
-        return [false, err.message];
-    }
-    return [true, ''];
-}
-
 export const sortHashTable = (obj) => {
     let sorted = {};
     Object.keys(obj).sort((a, b) => a > b ? 1 : b > a ? -1 : 0).forEach(key => sorted[key] = obj[key]);
@@ -105,6 +92,17 @@ export const isDiceRollCommandValid = (command) => {
     return [true, ''];
 }
 
+export const isVariableValid = (variableLabel, variableTxt, otherVariables) => {
+    const isValidByRegex = !!variableTxt && variableRegex.test(variableTxt);
+    if (!isValidByRegex)
+        return [false, 'Variable/Expression should not be empty and pass regular expression validation'];
+
+    if (isVariableCallingItself(variableLabel, variableTxt, otherVariables))
+        return [false, 'Variable/Expression should not call itself or make another variable call itself'];
+
+    return doesExpressionReturnsAnInteger(variableTxt);
+}
+
 export const isVariableCallingItself = (variableLabel, variableTxt, setVariables) => {
     const otherVariableLabels = variableTxt.match(variableLabelInExpressionRegex);
     if (otherVariableLabels && otherVariableLabels[0]) {
@@ -128,15 +126,17 @@ export const isVariableCallingItself = (variableLabel, variableTxt, setVariables
     return false;
 }
 
-export const isVariableValid = (variableLabel, variableTxt, otherVariables) => {
-    const isValidByRegex = !!variableTxt && variableRegex.test(variableTxt);
-    if (!isValidByRegex)
-        return [false, 'Variable/Expression should not be empty and pass regular expression validation'];
-
-    if (isVariableCallingItself(variableLabel, variableTxt, otherVariables))
-        return [false, 'Variable/Expression should not call itself or make another variable call itself'];
-
-    return doesExpressionReturnsAnInteger(variableTxt);
+const doesExpressionReturnsAnInteger = (exp) => {
+    try {
+        const clonedText = exp.replaceAll(variableLabelInExpressionRegex, '1');
+        const retVal = math.eval(clonedText);
+        const returnsNumber = typeof retVal === 'number' && isInt(retVal);
+        if (!returnsNumber) return [false, 'Expression should return an interger number'];
+    }
+    catch (err) {
+        return [false, err.message];
+    }
+    return [true, ''];
 }
 
 export const execVariable = (variableTxt, setVariables) => {
@@ -176,19 +176,51 @@ export const isCollectonValid = (diceRollCollection) => {
     return [true, ''];
 }
 
-export const areSetItemsValid = (set, setName) => {
-    if (!set.commands || typeof set.commands !== "object") {
-        return [false, `The 'commands' property of set ${setName} is null, undefined or not an object.`];
-    }
+export const areAllCommandsValid = (set, setName) => {
     for (const commandLabel in set.commands) {
         if (isSetNameOrLabelValid(commandLabel)) {
-            if (!isDiceRollCommandValid(set.commands[commandLabel])) {
-                return [false, `Dice roll item command ${commandLabel}/${set.commands[commandLabel]} in set ${setName} isn't valid.`];
+            const [valid, validationMessage] = isDiceRollCommandValid(set.commands[commandLabel]);
+            if (!valid) {
+                return [false, `Dice roll item command ${commandLabel}/${set.commands[commandLabel]} in set ${setName} isn't valid. ${validationMessage}`];
             }
         }
         else {
             return [false, `Dice roll item label ${commandLabel} in set ${setName} isn't valid.`];
         }
+    }
+}
+
+export const areAllVariablesValid = (set, setName) => {
+    for (const variableLabel in set.variables) {
+        if (isSetNameOrLabelValid(variableLabel)) {
+            const [valid, validationMessage] = isVariableValid(variableLabel, set.variables[variableLabel], set.variables);
+            if (!valid) {
+                return [false, `Variable ${variableLabel}/${set.variables[variableLabel]} in set ${setName} isn't valid. ${validationMessage}`];
+            }
+        }
+        else {
+            return [false, `Variable label ${variableLabel} in set ${setName} isn't valid.`];
+        }
+    }
+}
+
+export const areSetItemsValid = (set, setName) => {
+    if (!set.commands || typeof set.commands !== "object") {
+        return [false, `The 'commands' property of set ${setName} is null, undefined or not an object.`];
+    }
+
+    if (!set.variables || typeof set.variables !== "object") {
+        return [false, `The 'variables' property of set ${setName} is null, undefined or not an object.`];
+    }
+
+    const [commandsValid, commandsValidationMessage] = areAllCommandsValid(set, setName);
+    if (!commandsValid) {
+        return [false, commandsValidationMessage];
+    }
+
+    const [varsValid, varsValidationMessage] = areAllVariablesValid(set, setName);
+    if (!varsValid) {
+        return [false, varsValidationMessage];
     }
 
     return [true, ''];
