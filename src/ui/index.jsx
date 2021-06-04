@@ -7,7 +7,6 @@ import appReducer from '../reducers/app-reducer.js';
 import { loadDiceRollSets } from '../reducers/action-creators.js';
 import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'react-notifications-component/dist/theme.css';
 
 const store = createStore(appReducer);
 

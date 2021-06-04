@@ -38,14 +38,15 @@ const ButtonWithTolltip = (props) => {
         switch (props.type) {
             case "icon": {
                 return (
-                    <FontAwesomeIcon
-                        ref={btnRef}
-                        onMouseEnter={onMouseEnter}
-                        onMouseLeave={onMouseLeave}
-                        onClick={props.onClick}
-                        icon={props.faIcon}
-                        style={props.faStyle}
-                    />
+                    <span ref={btnRef}>
+                        <FontAwesomeIcon
+                            onMouseEnter={onMouseEnter}
+                            onMouseLeave={onMouseLeave}
+                            onClick={props.onClick}
+                            icon={props.faIcon}
+                            style={props.faStyle}
+                        />
+                    </span>
                 )
             }
             case "link": {
