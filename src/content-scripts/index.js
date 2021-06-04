@@ -5,12 +5,12 @@ import 'jquery-ui/ui/widgets/resizable';
 
 $(function () {
     var $container = $("#dice-roller-container")
-    $container.draggable({ handle: '.navbar-dark' });
+    $container.draggable({ containment: "body", handle: '.navbar-dark' });
     $container.hide();
     var $btnToggle = $("<div id='dice-roller-toggle-button'>");
     $("body").append(
         $btnToggle
-            .draggable()
+            .draggable({ containment: "body" })
             .append('<img src="chrome-extension://' + (chrome.runtime ? chrome.runtime.id : '') + '/icons/64.png" />')
             .css("position", "absolute")
             .css("top", "60px")
