@@ -62,8 +62,8 @@ class DiceRollResultSet {
                         dm,
                         tn
                     } = subMatches.groups;
-                    if (diceCount) {
-                        newInput += (math.eval(diceCount) || NaN) + "d" + sides;
+                    if (sides) {
+                        newInput += (math.eval(diceCount || '1') || NaN) + "d" + sides;
                     }
                     if (hl) {
                         newInput += hl;

@@ -70,7 +70,7 @@ export const isDiceRollCommandValid = (command) => {
                 constant
             } = subMatches.groups;
 
-            const [hasValidDiceCount, diceErrorMessage] = doesExpressionReturnsAnInteger(diceCount);
+            const [hasValidDiceCount, diceErrorMessage] = doesExpressionReturnsAnInteger(diceCount || "1");
             const [hasValidConstant, constErrorMessage] = doesExpressionReturnsAnInteger(constant);
 
             if (!hasValidDiceCount || !hasValidConstant) {
@@ -188,6 +188,7 @@ export const areAllCommandsValid = (set, setName) => {
             return [false, `Dice roll item label ${commandLabel} in set ${setName} isn't valid.`];
         }
     }
+    return [true, ''];
 }
 
 export const areAllVariablesValid = (set, setName) => {
@@ -202,6 +203,7 @@ export const areAllVariablesValid = (set, setName) => {
             return [false, `Variable label ${variableLabel} in set ${setName} isn't valid.`];
         }
     }
+    return [true, ''];
 }
 
 export const areSetItemsValid = (set, setName) => {
