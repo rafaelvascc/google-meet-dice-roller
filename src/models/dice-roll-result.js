@@ -29,14 +29,7 @@ class DiceRollResult {
         if (!sides || sides < 1) {
             throw "Number of sides should be a number greater than 0";
         }
-
-        const step = 1 / sides;
-        const rad = Math.random();
-        const sub = 1 - rad;
-        if (sub === 0) {
-            sub = 0.000000000001;
-        }
-        return Math.ceil(sub / step);
+        return Math.floor(Math.random() * sides + 1);
     }
 
     /**

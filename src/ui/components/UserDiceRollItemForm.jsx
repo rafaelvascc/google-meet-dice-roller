@@ -11,7 +11,6 @@ import { isDiceRollLabelValid, isDiceRollCommandValid } from '../../models/dice-
 import { useDispatch } from 'react-redux';
 import { diceRollEdited, diceRollDeleted } from '../../reducers/action-creators';
 import DiceRollResultSet from '../../models/dice-roll-result-set';
-import { store } from 'react-notifications-component';
 
 const UserDiceRollItemForm = (props) => {
     const dispatch = useDispatch();
@@ -59,23 +58,33 @@ const UserDiceRollItemForm = (props) => {
     }
 
     const onBtnRollClick = (event) => {
-        if (chrome && chrome.tabs) {
-            chrome.tabs.query({
-                active: true,
-                currentWindow: true,
-                url: "*://meet.google.com/*"
-            }, tabs => {
-                if (tabs.length > 0) {
-                    var firstMeetTabId = tabs[0].id;
-                    chrome.tabs.sendMessage(firstMeetTabId, {
-                        type: "onBtnRollClick",
-                        payload: `${props.setName}.${label}`
-                    });
-                }
-                else {
-                    showRollDiceResultOnAPopup();
-                }
-            })
+        const textAreas = document.getElementsByName("chatTextInput");
+        if (textAreas && textAreas[0]) {
+            var chatTextInput = textAreas[0];
+            chatTextInput.value = `roll ${props.setName}.${label}`;
+            var event = new KeyboardEvent("keydown", {
+                key: "Enter",
+                code: "Enter",
+                keyCode: 13,
+                altKey: false,
+                bubbles: true,
+                cancelBubble: false,
+                cancelable: true,
+                charCode: 0,
+                composed: true,
+                ctrlKey: false,
+                defaultPrevented: false,
+                detail: 0,
+                eventPhase: 1,
+                isComposing: false,
+                isTrusted: true,
+                location: 0,
+                metaKey: false,
+                repeat: false,
+                returnValue: true,
+                shiftKey: false
+            });
+            chatTextInput.dispatchEvent(event);
         }
         else {
             showRollDiceResultOnAPopup();
@@ -87,19 +96,8 @@ const UserDiceRollItemForm = (props) => {
         const variables = props.set.variables;
         const result = DiceRollResultSet.fromUserCommandLine(cmd, variables);
         const strResult = result.asPresentationString(`${props.setName}.${label}`, true);
-        store.addNotification({
-            title: `${props.setName}.${label}`,
-            message: strResult,
-            type: "info",
-            insert: "top",
-            container: "top-right",
-            animationIn: ["animate__animated", "animate__fadeIn"],
-            animationOut: ["animate__animated", "animate__fadeOut"],
-            dismiss: {
-                duration: 15000,
-                onScreen: true
-            }
-        });
+        console.log(strResult);
+        //TODO: Look for a notify component with html templates
     }
 
     const onLabelChange = (event) => {

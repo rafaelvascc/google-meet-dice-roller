@@ -1,4 +1,36 @@
 import DiceRollResultSet from '../models/dice-roll-result-set'
+import $ from 'jquery';
+import 'jquery-ui/ui/widgets/draggable';
+import 'jquery-ui/ui/widgets/resizable';
+
+$(function () {
+    var $container = $("#dice-roller-container")
+    $container.draggable({ handle: '.navbar-dark' });
+    $container.hide();
+    var $btnToggle = $("<div id='dice-roller-toggle-button'>");
+    $("body").append(
+        $btnToggle
+            .draggable()
+            .append('<img src="chrome-extension://' + (chrome.runtime ? chrome.runtime.id : '') + '/icons/64.png" />')
+            .css("position", "absolute")
+            .css("top", "60px")
+            .css("left", "16px")
+            .css("z-index", "2")
+            .css("border", "0")
+            .css("cursor", "pointer")
+            .css("border-radius", "50%")
+            .on("click", function (event) {
+                $container.css("top", $btnToggle.css("top")).css("left", $btnToggle.css("left"));
+                $btnToggle.toggle({
+                    duration: 200,
+                    complete: () => {
+                        $container.toggle({
+                            duration: 200
+                        });
+                    }
+                });
+            }));
+});
 
 var sets = {};
 
@@ -11,38 +43,6 @@ if (chrome && chrome.storage) {
         var newSetsInStorage = changes["gmdrsets"];
         if (newSetsInStorage && newSetsInStorage["newValue"]) {
             sets = newSetsInStorage["newValue"]
-        }
-    });
-}
-
-if (chrome && chrome.runtime) {
-    chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-        if (typeof (message) === "object" && message.type === "onBtnRollClick") {
-            var chatTextInput = document.getElementsByName("chatTextInput")[0];
-            chatTextInput.value = "roll " + message.payload;
-            var event = new KeyboardEvent("keydown", {
-                key: "Enter",
-                code: "Enter",
-                keyCode: 13,
-                altKey: false,
-                bubbles: true,
-                cancelBubble: false,
-                cancelable: true,
-                charCode: 0,
-                composed: true,
-                ctrlKey: false,
-                defaultPrevented: false,
-                detail: 0,
-                eventPhase: 1,
-                isComposing: false,
-                isTrusted: true,
-                location: 0,
-                metaKey: false,
-                repeat: false,
-                returnValue: true,
-                shiftKey: false
-            });
-            chatTextInput.dispatchEvent(event);
         }
     });
 }

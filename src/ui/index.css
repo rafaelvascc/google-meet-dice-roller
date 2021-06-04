@@ -1,7 +1,16 @@
-body {
-  height: 500px;
+#dice-roller-container {
+  max-height: 500px;
   width : 700px;
   margin: 0;
+  z-index: 2 !important;
+}
+
+#dice-roller-container .navbar-dark {
+  cursor: grab !important
+}
+
+#dice-roller-container .navbar-dark:active {
+  cursor: grabbing !important;
 }
 
 .btn-fa-circle-sm {

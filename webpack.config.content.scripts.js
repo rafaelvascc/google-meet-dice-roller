@@ -41,8 +41,7 @@ const contentScriptsConfig = {
             object: {
                 version: PACKAGE.version,
                 action: {
-                    default_icon: 'icons/128.png',
-                    default_popup: BUILD_UI_INDEX_HTML_FILE_RELATIVE_TO_MANIFEST
+                    default_icon: 'icons/128.png'
                 },
                 content_scripts: [
                     {
@@ -50,7 +49,8 @@ const contentScriptsConfig = {
                             'https://meet.google.com/*'
                         ],
                         js: [
-                            BUILT_CONTENT_SCRIPT_RELATIVE_TO_MANIFEST
+                            BUILT_CONTENT_SCRIPT_RELATIVE_TO_MANIFEST,
+                            "ui/index.js"
                         ]
                     }
                 ]

@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import App from './components/App.jsx';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import ReactNotification from 'react-notifications-component';
 import appReducer from '../reducers/app-reducer.js';
 import { loadDiceRollSets } from '../reducers/action-creators.js';
 import './index.css';
@@ -13,12 +12,14 @@ import 'react-notifications-component/dist/theme.css';
 const store = createStore(appReducer);
 
 const renderApp = () => {
+	const container = document.createElement('div');
+	container.id = "dice-roller-container";
+	document.body.appendChild(container);
 	ReactDOM.render(
 		<Provider store={store}>
-			<ReactNotification />
 			<App />
 		</Provider>,
-		document.getElementById('root')
+		container
 	);
 }
 
