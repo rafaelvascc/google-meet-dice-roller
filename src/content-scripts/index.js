@@ -21,10 +21,10 @@ $(function () {
             .css("border-radius", "50%")
             .on("click", function (event) {
                 $container.css("top", $btnToggle.css("top")).css("left", $btnToggle.css("left"));
-                $btnToggle.toggle({
+                $btnToggle.hide({
                     duration: 200,
                     complete: () => {
-                        $container.toggle({
+                        $container.show({
                             duration: 200
                         });
                     }

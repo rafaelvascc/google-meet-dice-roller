@@ -53,7 +53,7 @@ const BackupArea = (props) => {
     return (
         <>
             <Collapse in={props.backupVisible}>
-                <Container fluid style={{ border: "1px solid rgba(0,0,0,.125)", paddingTop: "15px", paddingBottom: "15px", position: "relative" }}>
+                <Container fluid style={{ background: "white", paddingTop: "15px", paddingBottom: "15px", position: "relative" }}>
                     <ButtonWithTolltip
                         style={{ marginRight: "5px", position: "absolute", right: "10px" }}
                         onClick={() => { navigator.clipboard.writeText(JSON.stringify(diceRollCollection, null, 4)) }}
@@ -66,7 +66,7 @@ const BackupArea = (props) => {
                 </Container>
             </Collapse>
             <Collapse in={props.restoreVisible}>
-                <Container fluid style={{ border: "1px solid rgba(0,0,0,.125)", paddingTop: "15px", paddingBottom: "15px", position: "relative" }}>
+                <Container fluid style={{ background: "white", paddingTop: "15px", paddingBottom: "15px", position: "relative" }}>
                     <Form.Group style={{ display: "flex", flexDirection: "column", marginBottom: "0px" }}>
                         <Form.Label>Paste a previous backup here</Form.Label>
                         <Form.Control

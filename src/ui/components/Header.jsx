@@ -51,10 +51,10 @@ const Header = () => {
             const $container = $("#dice-roller-container");
             const $btnToggle = $("#dice-roller-toggle-button");
             $btnToggle.css("top", $container.css("top")).css("left", $container.css("left"));
-            $container.toggle({
+            $container.hide({
               duration: 400,
               complete: () => {
-                $btnToggle.toggle({
+                $btnToggle.show({
                   duration: 200
                 });
               }
