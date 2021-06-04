@@ -14,7 +14,6 @@ const reactUIConfig = {
     mode: 'development',
     entry: './src/ui/index.jsx',
     devtool: 'source-map',
-    watch: true,
     output: {
         path: path.resolve(__dirname, BUILD_UI_PATH),
         filename: BUILT_REACT_UI_JS
