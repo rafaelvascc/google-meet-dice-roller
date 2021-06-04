@@ -2,14 +2,16 @@ const collectionToHashSet = (collection) => {
     let kv = {};
     for (var i = 0; i < collection.length; i++) {
         var set = collection[i];
-        kv[set.name] = {
+        var setName = set.name.replaceAll(/[.\s+\-*(){}\[\]/\\]/g, '_');
+        kv[setName] = {
             variables: {},
             commands: {}
         };
         if (set.items && set.items.length > 0) {
             for (var j = 0; j < set.items.length; j++) {
                 var item = set.items[j];
-                kv[set.name]["commands"][item.label] = item.command;
+                var itemLabel = item.label.replaceAll(/[.\s+\-*(){}\[\]/\\]/g, '_');
+                kv[setName]["commands"][itemLabel] = item.command;
             }
         }
     }
