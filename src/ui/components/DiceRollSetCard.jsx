@@ -1,19 +1,21 @@
 import React, { useState, useRef } from 'react';
-import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import ButtonWithTolltip from './ButtonWithTolltip.jsx';
 import Accordion from 'react-bootstrap/Accordion';
-import Popover from 'react-bootstrap/Popover';
-import Tooltip from 'react-bootstrap/Tooltip';
-import Overlay from 'react-bootstrap/Overlay';
 import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button';
+import Tabs from 'react-bootstrap/Tabs';
+import Tab from 'react-bootstrap/Tab';
 import UserDiceRollItemForm from './UserDiceRollItemForm.jsx';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
+import FormPopoverContainer from './FormPopoverContainer.jsx';
+import { faPlus, faMinus, faDiceD20, faDice } from '@fortawesome/free-solid-svg-icons';
 import NewDiceRollForm from './NewDiceRollForm.jsx';
+import NewVariableForm from './NewVariableForm.jsx';
+import UserVariableForm from './UserVariableForm.jsx';
 import DeleteConfirmationForm from './DeleteConfirmationForm.jsx'
 import { useDispatch } from 'react-redux';
 import { diceRollSetDeleted } from '../../reducers/action-creators'
-import { Col, Form, Row } from 'react-bootstrap';
+import { Col, Form } from 'react-bootstrap';
 
 const DiceRollSetCard = (props) => {
     if (!props || !props.set) {
@@ -21,136 +23,162 @@ const DiceRollSetCard = (props) => {
     }
     const dispatch = useDispatch();
 
-    const [removeSetTooltipVisible, setRemoveSetTooltipVisible] = useState(false);
+    const [addVariablePopoverVisible, setAddVariablePopoverVisible] = useState(false);
+    const [addDiceRollPopoverVisible, setAddDiceRollPopoverVisible] = useState(false);
     const [removeSetPopoverVisible, setRemoveSetPopoverVisible] = useState(false);
-    const removeSetPopoverTimeoutRef = useRef(null);
+    const [selectedTab, setSelectedTab] = useState('cmds')
+
+    const addVariablePopoverBtnRef = useRef(null);
+    const addDiceRollPopoverBtnRef = useRef(null);
     const removeSetPopoverBtnRef = useRef(null);
 
-    const [addDiceRollTooltipVisible, setAddDiceRollTooltipVisible] = useState(false);
-    const [addDiceRollPopoverVisible, setAddDiceRollPopoverVisible] = useState(false);
-    const addDiceRollPopoverTimeoutRef = useRef(null);
-    const addDiceRollPopoverBtnRef = useRef(null);
-
-    const onBtnRemoveSetMouseEnter = (event) => {
-        removeSetPopoverTimeoutRef.current = setTimeout(() => {
-            setRemoveSetTooltipVisible(true);
-        }, 300);
+    const onBtnAddVariableClick = (event) => {
+        event.stopPropagation();
+        hidePopovers();
+        setAddVariablePopoverVisible(!addVariablePopoverVisible);
     }
 
-    const onBtnRemoveSetMouseLeave = (event) => {
-        if (removeSetPopoverTimeoutRef.current) {
-            clearTimeout(removeSetPopoverTimeoutRef.current);
-        }
-        setRemoveSetTooltipVisible(false);
+    const onBtnAddCommandClick = (event) => {
+        event.stopPropagation();
+        hidePopovers();
+        setAddDiceRollPopoverVisible(!addDiceRollPopoverVisible);
     }
 
     const onBtnRemoveSetClick = (event) => {
         event.stopPropagation();
-        if (addDiceRollPopoverVisible) {
-            setAddDiceRollPopoverVisible(false);
-        }
-        setRemoveSetTooltipVisible(false);
+        hidePopovers();
         setRemoveSetPopoverVisible(!removeSetPopoverVisible);
     }
 
-    const removeDiceRollSetPopover = (innerProps) => (
-        <Popover onClick={(event) => event.stopPropagation()} id='popover-basic' {...innerProps}>
-            <Popover.Title as='h3'>Remove Dice Roll Set</Popover.Title>
-            <Popover.Content>
-                <DeleteConfirmationForm
-                    onBtnConfirmClick={() => {
-                        setRemoveSetPopoverVisible(false);
-                        dispatch(diceRollSetDeleted(props.set.name));
-                    }}
-                    onBtnCancelClick={() => setRemoveSetPopoverVisible(false)} />
-            </Popover.Content>
-        </Popover>
-    );
-
-    const onBtnAddDiceMouseEnter = (event) => {
-        addDiceRollPopoverTimeoutRef.current = setTimeout(() => {
-            setAddDiceRollTooltipVisible(true);
-        }, 300);
+    const hidePopovers = () => {
+        setAddVariablePopoverVisible(false);
+        setAddDiceRollPopoverVisible(false);
+        setRemoveSetPopoverVisible(false);
     }
 
-    const onBtnAddDiceSetMouseLeave = (event) => {
-        if (addDiceRollPopoverTimeoutRef.current) {
-            clearTimeout(addDiceRollPopoverTimeoutRef.current);
-        }
-        setAddDiceRollTooltipVisible(false);
-    }
-
-    const onBtnAddDiceClick = (event) => {
-        event.stopPropagation();
-        if (removeSetPopoverVisible) {
-            setRemoveSetPopoverVisible(false);
-        }
-        setAddDiceRollTooltipVisible(true);
-        setAddDiceRollPopoverVisible(!addDiceRollPopoverVisible);
-    }
-
-    const addDicePopover = (innerProps) => (
-        <Popover onClick={(event) => event.stopPropagation()} id='popover-basic' {...innerProps}>
-            <Popover.Title as='h3'>Add Dice Roll To Set</Popover.Title>
-            <Popover.Content>
-                <NewDiceRollForm set={props.set} onBtnConfirmClick={() => setAddDiceRollPopoverVisible(false)} onBtnCancelClick={() => setAddDiceRollPopoverVisible(false)} />
-            </Popover.Content>
-        </Popover>
-    );
-
-    return (
-        <Card>
-            <Accordion.Toggle className="dice-set-header" as={Card.Header} eventKey={props.index.toString()}>
-                {props.set.name}
-                <ButtonGroup>
-                    <Button
-                        style={{ marginRight: "5px" }}
-                        ref={addDiceRollPopoverBtnRef}
-                        onClick={onBtnAddDiceClick}
-                        onMouseEnter={onBtnAddDiceMouseEnter}
-                        onMouseLeave={onBtnAddDiceSetMouseLeave}
-                        variant="primary"
-                        className='btn-fa-circle-sm'>
-                        <FontAwesomeIcon icon={faPlus} />
-                    </Button>
-                    <Button
-                        ref={removeSetPopoverBtnRef}
-                        onClick={onBtnRemoveSetClick}
-                        onMouseEnter={onBtnRemoveSetMouseEnter}
-                        onMouseLeave={onBtnRemoveSetMouseLeave}
-                        variant="danger"
-                        className='btn-fa-circle-sm'>
-                        <FontAwesomeIcon icon={faMinus} />
-                    </Button>
-                </ButtonGroup>
-                <Overlay target={addDiceRollPopoverBtnRef.current} show={addDiceRollTooltipVisible && !addDiceRollPopoverVisible} placement="bottom">
-                    {(props) => <Tooltip id="remove-dice-roll-set-tooltip" {...props}>Click to add a dice roll command to this dice roll set</Tooltip>}
-                </Overlay>
-                <Overlay target={addDiceRollPopoverBtnRef.current} show={addDiceRollPopoverVisible} placement="bottom">
-                    {(props) => addDicePopover(props)}
-                </Overlay>
-                <Overlay target={removeSetPopoverBtnRef.current} show={removeSetTooltipVisible && !removeSetPopoverVisible} placement="bottom">
-                    {(props) => <Tooltip id="remove-dice-roll-set-tooltip" {...props}>Click to remove this dice roll set</Tooltip>}
-                </Overlay>
-                <Overlay target={removeSetPopoverBtnRef.current} show={removeSetPopoverVisible} placement="bottom">
-                    {(props) => removeDiceRollSetPopover(props)}
-                </Overlay>
-            </Accordion.Toggle>
-            <Accordion.Collapse eventKey={props.index.toString()}>
-                <Card.Body style={{paddingTop: "8px", paddingBottom: "8px", paddingRight: "16px", paddingLeft: "16px"}}>
-                    <Form.Row style={{marginBottom: "0px"}}>
-                        <Form.Group as={Col} sm={4} controlId="diceLabel" style={{marginBottom: "0px"}}>
+    const getTab = (tabName) => {
+        if (selectedTab === "cmds") {
+            return (
+                <>
+                    <Form.Row style={{ marginBottom: "0px", marginTop: "16px" }}>
+                        <Form.Group as={Col} sm={4} controlId="commandLabelHeader" style={{ marginBottom: "0px" }}>
                             <Form.Label>Label</Form.Label>
                         </Form.Group>
-                        <Form.Group as={Col} sm={6} controlId="diceCmd" style={{marginBottom: "0px"}}>
+                        <Form.Group as={Col} sm={6} controlId="commandHeader" style={{ marginBottom: "0px" }}>
                             <Form.Label>Command</Form.Label>
                         </Form.Group>
                     </Form.Row>
-                    {props.set.items.length > 0 && props.set.items.map((item, i) => {
-                        return (
-                            <UserDiceRollItemForm key={item.label} set={props.set} item={item} index={i} />
-                        )
-                    })}
+                    {
+                        Object.keys(props.set.commands).map((k) => {
+                            return (
+                                <UserDiceRollItemForm key={k} setName={props.setName} set={props.set} label={k} command={props.set.commands[k]} />
+                            )
+                        })
+                    }
+                </>
+            );
+        }
+        if (selectedTab === "vars") {
+            return (
+                <>
+                    <Form.Row style={{ marginBottom: "0px", marginTop: "16px" }}>
+                        <Form.Group as={Col} sm={4} controlId="variableLabelHeader" style={{ marginBottom: "0px" }}>
+                            <Form.Label>Label</Form.Label>
+                        </Form.Group>
+                        <Form.Group as={Col} sm={6} controlId="variableHeader" style={{ marginBottom: "0px" }}>
+                            <Form.Label>Variable/Expression</Form.Label>
+                        </Form.Group>
+                    </Form.Row>
+                    {
+                        Object.keys(props.set.variables).map((k) => {
+                            return (
+                                <UserVariableForm key={k} setName={props.setName} set={props.set} label={k} expression={props.set.variables[k]} />
+                            )
+                        })
+                    }
+                </>
+            );
+        }
+    }
+
+    return (
+        <Card>
+            <Accordion.Toggle className="dice-set-header" as={Card.Header} eventKey={props.setName}>
+                {props.setName}
+                <ButtonGroup>
+                    <ButtonWithTolltip
+                        style={{ marginRight: "5px" }}
+                        showTooltip={!addVariablePopoverVisible}
+                        getRefFunc={(ref) => addVariablePopoverBtnRef.current = ref.current}
+                        onClick={onBtnAddVariableClick}
+                        variant="primary"
+                        faCrudIcon={faPlus}
+                        faIcon={null}
+                        customIcon={
+                            <svg width="20" height="20" className="svg-inline--fa fa-plus fa-w-14 fa-stack-1x fa-inverse" style={{ position: "absolute", right: "-13px" }}>
+                                <g>
+                                    <text
+                                        transform="matrix(0.983003 0 0 1.18038 0.00212464 -0.451036)"
+                                        stroke="#000"
+                                        strokeWidth="0"
+                                        fontStyle="italic"
+                                        fontWeight="bold"
+                                        textAnchor="start"
+                                        fontFamily="serif"
+                                        fontSize="14"
+                                        y="12.50646"
+                                        x="0.18556"
+                                        fill="#ffffff">
+                                        (X)
+                                        </text>
+                                </g>
+                            </svg>
+                        }
+                        tooltipText={"Click to add a variable to this dice roll set"}
+                    />
+                    <ButtonWithTolltip
+                        style={{ marginRight: "5px" }}
+                        showTooltip={!addDiceRollPopoverVisible}
+                        getRefFunc={(ref) => addDiceRollPopoverBtnRef.current = ref.current}
+                        onClick={onBtnAddCommandClick}
+                        variant="success"
+                        faCrudIcon={faPlus}
+                        faIcon={faDiceD20}
+                        tooltipText={"Click to add a dice roll command to this dice roll set"}
+                    />
+                    <ButtonWithTolltip
+                        showTooltip={!removeSetPopoverVisible}
+                        getRefFunc={(ref) => removeSetPopoverBtnRef.current = ref.current}
+                        onClick={onBtnRemoveSetClick}
+                        variant="danger"
+                        faCrudIcon={faMinus}
+                        faIcon={faDice}
+                        tooltipText={"Click to remove this dice roll set"}
+                    />
+                </ButtonGroup>
+                <FormPopoverContainer ref={addVariablePopoverBtnRef} show={addVariablePopoverVisible} title="Add Variable To Set">
+                    <NewVariableForm setName={props.setName} set={props.set} onBtnConfirmClick={() => setAddVariablePopoverVisible(false)} onBtnCancelClick={() => setAddVariablePopoverVisible(false)} />
+                </FormPopoverContainer>
+                <FormPopoverContainer ref={addDiceRollPopoverBtnRef} show={addDiceRollPopoverVisible} title="Add Dice Roll To Set">
+                    <NewDiceRollForm setName={props.setName} set={props.set} onBtnConfirmClick={() => setAddDiceRollPopoverVisible(false)} onBtnCancelClick={() => setAddDiceRollPopoverVisible(false)} />
+                </FormPopoverContainer>
+                <FormPopoverContainer ref={removeSetPopoverBtnRef} show={removeSetPopoverVisible} title="Remove Dice Roll Set">
+                    <DeleteConfirmationForm
+                        onBtnConfirmClick={() => {
+                            setRemoveSetPopoverVisible(false);
+                            dispatch(diceRollSetDeleted(props.setName));
+                        }}
+                        onBtnCancelClick={() => setRemoveSetPopoverVisible(false)}
+                    />
+                </FormPopoverContainer>
+            </Accordion.Toggle>
+            <Accordion.Collapse eventKey={props.setName}>
+                <Card.Body style={{ paddingTop: "8px", paddingBottom: "8px", paddingRight: "16px", paddingLeft: "16px" }}>
+                    <Form.Row>
+                        <Button variant="success" size="sm" onClick={() => setSelectedTab('cmds')} style={selectedTab === "cmds" ? { boxShadow: "0px 0px 0px 4px palegreen", marginRight: "8px" } : { marginRight: "8px" }}>Commands</Button>
+                        <Button variant="primary" size="sm" onClick={() => setSelectedTab('vars')} style={selectedTab === "vars" ? { boxShadow: "0px 0px 0px 4px cyan" } : {}}>Variables</Button>
+                    </Form.Row>
+                    {getTab(selectedTab)}
                 </Card.Body>
             </Accordion.Collapse>
         </Card>

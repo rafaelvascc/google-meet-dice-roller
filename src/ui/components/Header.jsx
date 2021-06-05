@@ -1,93 +1,92 @@
-import React, { useState, useRef } from 'react';
-import icon from '../../../assets/icons/128.png';
+import React, { useRef, useState } from 'react';
 import Navbar from 'react-bootstrap/Navbar';
-import Overlay from 'react-bootstrap/Overlay';
-import Tooltip from 'react-bootstrap/Tooltip';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDonate, faQuestion, faBug } from '@fortawesome/free-solid-svg-icons';
+import ButtonWithTolltip from './ButtonWithTolltip.jsx';
+import { faDonate, faQuestion, faBug, faWindowClose } from '@fortawesome/free-solid-svg-icons';
+import FormPopoverContainer from './FormPopoverContainer.jsx';
+import $ from 'jquery';
 
 const Header = () => {
-  const [donateTolltipVisible, setDonateTolltipVisible] = useState(false);
-  const [bugTolltipVisible, setBugTolltipVisible] = useState(false);
-  const [helpTolltipVisible, setHelpTolltipVisible] = useState(false);
-  const donateTolltipTimeoutRef = useRef(null);
-  const bugTolltipTimeoutRef = useRef(null);
-  const helpTolltipTimeoutRef = useRef(null);
-  const donateBtnRef = useRef(null);
-  const bugBtnRef = useRef(null);
-  const helpBtnRef = useRef(null);
+    const pixImgRef = useRef(null);
+    const [pixQrVisible, setPixQrVisible] = useState(false);
 
-  const onBtnMouseEnter = (tooltipTimeoutRef, setTooltipVisibleFunc) => {
-    tooltipTimeoutRef.current = setTimeout(() => {
-      setTooltipVisibleFunc(true);
-    }, 300);
-  }
-
-  const onBtnMouseLeave = (tooltipTimeoutRef) => {
-    if (tooltipTimeoutRef.current) {
-      clearTimeout(tooltipTimeoutRef.current);
-    }
-    hideAllToolTips();
-  }
-
-  const hideAllToolTips = () => {
-    setDonateTolltipVisible(false);
-    setBugTolltipVisible(false);
-    setHelpTolltipVisible(false);
-  }
-
-  return (
-    <Navbar bg='dark' variant='dark'>
-      <Navbar.Brand>
-        <img
-          alt=''
-          src={icon}
-          width='30'
-          height='30'
-          className='d-inline-block align-top'
-        />{' '}
-      Google Meet Dice Roller
-      </Navbar.Brand>
-      <div style={{ marginLeft: "auto", marginRight: "9px" }}>
-        <a ref={donateBtnRef} href="https://www.paypal.com/donate?hosted_button_id=8P3F8ZGPH9L34" target="_blank" rel="noreferrer noopener">
-          <FontAwesomeIcon
-            onMouseEnter={(event) => onBtnMouseEnter(donateTolltipTimeoutRef, setDonateTolltipVisible)}
-            onMouseLeave={(event) => onBtnMouseLeave(donateTolltipTimeoutRef)}
-            onBlur={(event) => onBtnMouseLeave(donateTolltipTimeoutRef)}
-            icon={faDonate}
-            style={{ color: "#fff", marginRight: "8px" }}
-          />
-        </a>
-        <a ref={bugBtnRef} href="https://github.com/rafaelvascc/google-meet-dice-roller/issues" target="_blank" rel="noreferrer noopener">
-          <FontAwesomeIcon
-            onMouseEnter={(event) => onBtnMouseEnter(bugTolltipTimeoutRef, setBugTolltipVisible)}
-            onMouseLeave={(event) => onBtnMouseLeave(bugTolltipTimeoutRef)}
-            onBlur={(event) => onBtnMouseLeave(bugTolltipTimeoutRef)}
-            icon={faBug}
-            style={{ color: "#fff", marginRight: "8px" }}
-          />
-        </a>
-        <a ref={helpBtnRef} href="https://github.com/rafaelvascc/google-meet-dice-roller/blob/master/README.md" target="_blank" rel="noreferrer noopener">
-          <FontAwesomeIcon
-            onMouseEnter={(event) => onBtnMouseEnter(helpTolltipTimeoutRef, setHelpTolltipVisible)}
-            onMouseLeave={(event) => onBtnMouseLeave(helpTolltipTimeoutRef)}
-            onBlur={(event) => onBtnMouseLeave(helpTolltipTimeoutRef)}
-            icon={faQuestion}
-            style={{ color: "#fff" }}
-          />
-        </a>
-        <Overlay target={donateBtnRef.current} show={donateTolltipVisible} placement="bottom">
-          {(props) => <Tooltip id="donate-tooltip" {...props}>Donate (Paypal)</Tooltip>}
-        </Overlay>
-        <Overlay target={bugBtnRef.current} show={bugTolltipVisible} placement="bottom">
-          {(props) => <Tooltip id="bug-tooltip" {...props}>Report bug or ask for feature (Github)</Tooltip>}
-        </Overlay>
-        <Overlay target={helpBtnRef.current} show={helpTolltipVisible} placement="bottom">
-          {(props) => <Tooltip id="help-tooltip" {...props}>Help/Docs (Github)</Tooltip>}
-        </Overlay>
-      </div>
-    </Navbar>
-  );
+    return (
+        <Navbar bg='dark' variant='dark'>
+            <Navbar.Brand>
+                <img
+                    alt=''
+                    src={chrome.runtime ? `chrome-extension://${chrome.runtime.id}/icons/128.png` : "chrome-extension://dicbnbffchgjndpgeibmbpiciapnghbg/icons/128.png"}
+                    width='30'
+                    height='30'
+                    className='d-inline-block align-top'
+                />{' '}
+            Google Meet Dice Roller
+            </Navbar.Brand>
+            <div style={{ marginLeft: "auto", marginRight: "9px" }}>
+                <ButtonWithTolltip
+                    type='image'
+                    tooltipText="Doar com Pix (Donate with Pix)"
+                    src={chrome.runtime ? `chrome-extension://${chrome.runtime.id}/assets/pix-logo-only.png` : "chrome-extension://dicbnbffchgjndpgeibmbpiciapnghbg/assets/pix-logo-only.png"}
+                    style={{ width: "20px", cursor: "pointer", marginRight: "8px", paddingBottom: "5px" }}
+                    getRefFunc={ref => pixImgRef.current = ref.current}
+                    onClick={(event) => {
+                        setPixQrVisible(!pixQrVisible);
+                    }}
+                />
+                <ButtonWithTolltip
+                    type='link'
+                    href="https://www.paypal.com/donate?hosted_button_id=8P3F8ZGPH9L34"
+                    tooltipText="Donate (Paypal)"
+                    faIcon={faDonate}
+                    style={{ marginRight: "8px" }}
+                    faStyle={{ color: "#fff" }}
+                />
+                <ButtonWithTolltip
+                    type='link'
+                    href="https://github.com/rafaelvascc/google-meet-dice-roller/issues"
+                    tooltipText="Report bug or ask for feature (Github)"
+                    faIcon={faBug}
+                    style={{ marginRight: "8px" }}
+                    faStyle={{ color: "#fff" }}
+                />
+                <ButtonWithTolltip
+                    type='link'
+                    href="https://github.com/rafaelvascc/google-meet-dice-roller/blob/master/README.md"
+                    tooltipText="Help/Docs (Github)"
+                    faIcon={faQuestion}
+                    style={{ marginRight: "8px" }}
+                    faStyle={{ color: "#fff" }}
+                />
+                <ButtonWithTolltip
+                    type='icon'
+                    tooltipText="Hide Window"
+                    faIcon={faWindowClose}
+                    faStyle={{ color: "#fff", cursor: "pointer" }}
+                    onClick={(event) => {
+                        const $container = $("#dice-roller-container");
+                        const $btnToggle = $("#dice-roller-toggle-button");
+                        $btnToggle.css("top", $container.css("top")).css("left", $container.css("left"));
+                        $container.hide({
+                            duration: 400,
+                            complete: () => {
+                                $btnToggle.show({
+                                    duration: 200
+                                });
+                            }
+                        });
+                        return false;
+                    }}
+                />
+                <FormPopoverContainer ref={pixImgRef} show={pixQrVisible} placement={"bottom"} title="Pix QR Code" style={{ maxWidth: "1000px", width: "auto" }}>
+                    <img
+                        alt=''
+                        src={chrome.runtime ? `chrome-extension://${chrome.runtime.id}/assets/pix_qr.png` : "chrome-extension://dicbnbffchgjndpgeibmbpiciapnghbg/assets/pix_qr.png"}
+                        width='300'
+                        height='300'
+                    />
+                </FormPopoverContainer>
+            </div>
+        </Navbar>
+    );
 }
 
 export default Header;

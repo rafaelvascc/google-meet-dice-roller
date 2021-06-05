@@ -1,67 +1,38 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
-import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import Overlay from 'react-bootstrap/Overlay';
-import Tooltip from 'react-bootstrap/Tooltip';
-import Popover from 'react-bootstrap/Popover';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faCheck, faTimes, faMinus, faDice } from '@fortawesome/free-solid-svg-icons';
+import ButtonWithTolltip from './ButtonWithTolltip.jsx';
+import InvalidInputFeedbackText from './InvalidInputFeedbackText.jsx';
+import FormPopoverContainer from './FormPopoverContainer.jsx';
+import { faEdit, faCheck, faTimes, faMinus, faDice, faSync, faDiceD20 } from '@fortawesome/free-solid-svg-icons';
 import DeleteConfirmationForm from './DeleteConfirmationForm.jsx';
 import { isDiceRollLabelValid, isDiceRollCommandValid } from '../../models/dice-roll-utils.js'
 import { useDispatch } from 'react-redux';
-import { diceRollEdited, diceRollDeleted } from '../../reducers/action-creators'
+import { diceRollEdited, diceRollDeleted } from '../../reducers/action-creators';
+import DiceRollResultSet from '../../models/dice-roll-result-set';
 
 const UserDiceRollItemForm = (props) => {
     const dispatch = useDispatch();
 
     const [isEditing, setIsEditing] = useState(false);
 
-    const [label, setLabel] = useState(props.item.label);
-    const [command, setCommad] = useState(props.item.command);
-    const [prevLabel, setPrevLabel] = useState(props.item.label);
-    const [prevCommand, setPrevCommad] = useState(props.item.command);
+    const [label, setLabel] = useState(props.label);
+    const [command, setCommad] = useState(props.command);
+    const [prevLabel, setPrevLabel] = useState(props.label);
+    const [prevCommand, setPrevCommad] = useState(props.command);
 
     const [isLabelValid, setIsLabelValid] = useState(true);
     const [isCommandValid, setIsCommandValid] = useState(true);
+    const [commandValidationMessage, setCommandValidationMessage] = useState('');
     const [didLabelChange, setDidLabelChange] = useState(false);
     const [didCommandChange, setDidCommandChange] = useState(false);
 
-    const [editTooltipVisible, setEditTooltipVisible] = useState(false);
-    const [deleteTooltipVisible, setDeleteTooltipVisible] = useState(false);
-    const [confirmEditTooltipVisible, setConfirmEditTooltipVisible] = useState(false);
-    const [cancelEditTooltipVisible, setCancelEditTooltipVisible] = useState(false);
-    const [rollTooltipVisible, setRollTooltipVisible] = useState(false);
-
-    const btnEditRef = useRef(null);
     const btnDeleteRef = useRef(null);
-    const btnConfirmRef = useRef(null);
-    const btnCancelRef = useRef(null);
-    const btnRollRef = useRef(null);
-    const btnEditTooltipTimeoutRef = useRef(null);
-    const btnDeleteTooltipTimeoutRef = useRef(null);
-    const btnConfirmTooltipTimeoutRef = useRef(null);
-    const btnCancelTooltipTimeoutRef = useRef(null);
-    const btnRollTooltipTimeoutRef = useRef(null);
 
     const [removeDiceRollPopOverVisible, setRemoveDiceRollPopOverVisible] = useState(false);
 
-    const onBtnMouseEnter = (tooltipTimeoutRef, setTooltipVisibleFunc) => {
-        tooltipTimeoutRef.current = setTimeout(() => {
-            setTooltipVisibleFunc(true);
-        }, 300);
-    }
-
-    const onBtnMouseLeave = (tooltipTimeoutRef) => {
-        if (tooltipTimeoutRef.current) {
-            clearTimeout(tooltipTimeoutRef.current);
-        }
-        hideAllToolTips();
-    }
-
     const onBtnEditClick = (event) => {
-        hideAllToolTips();
         setPrevLabel(label);
         setPrevCommad(command);
         setDidLabelChange(false);
@@ -69,14 +40,8 @@ const UserDiceRollItemForm = (props) => {
         setIsEditing(true);
     }
 
-    const onBtnDeleteClick = (event) => {
-        hideAllToolTips();
-        setRemoveDiceRollPopOverVisible(!removeDiceRollPopOverVisible);
-    }
-
     const onBtnConfirmClick = (event) => {
-        hideAllToolTips();
-        dispatch(diceRollEdited(props.set.name, prevLabel, label, command));
+        dispatch(diceRollEdited(props.setName, prevLabel, label, command));
         setPrevLabel(label);
         setPrevCommad(command);
         setDidLabelChange(false);
@@ -85,7 +50,6 @@ const UserDiceRollItemForm = (props) => {
     }
 
     const onBtnCancelClick = (event) => {
-        hideAllToolTips();
         setLabel(prevLabel);
         setCommad(prevCommand);
         setDidLabelChange(false);
@@ -94,47 +58,67 @@ const UserDiceRollItemForm = (props) => {
     }
 
     const onBtnRollClick = (event) => {
-        if (chrome && chrome.tabs) {
-            chrome.tabs.query({
-                active: true,
-                currentWindow: true,
-                url: "*://meet.google.com/*"
-            }, tabs => {
-                if (tabs.length > 0) {
-                    var firstMeetTabId = tabs[0].id;
-                    chrome.tabs.sendMessage(firstMeetTabId, {
-                        type: "onBtnRollClick",
-                        payload: `${props.set.name}.${label}`
-                    });
-                }
-            })
+        const textAreas = document.getElementsByName("chatTextInput");
+        if (textAreas && textAreas[0]) {
+            var chatTextInput = textAreas[0];
+            chatTextInput.value = `roll ${props.setName}.${label}`;
+            var event = new KeyboardEvent("keydown", {
+                key: "Enter",
+                code: "Enter",
+                keyCode: 13,
+                altKey: false,
+                bubbles: true,
+                cancelBubble: false,
+                cancelable: true,
+                charCode: 0,
+                composed: true,
+                ctrlKey: false,
+                defaultPrevented: false,
+                detail: 0,
+                eventPhase: 1,
+                isComposing: false,
+                isTrusted: true,
+                location: 0,
+                metaKey: false,
+                repeat: false,
+                returnValue: true,
+                shiftKey: false
+            });
+            chatTextInput.dispatchEvent(event);
         }
+        else {
+            showRollDiceResultOnAPopup();
+        }
+    }
+
+    const showRollDiceResultOnAPopup = () => {
+        const cmd = props.set.commands[label];
+        const variables = props.set.variables;
+        const result = DiceRollResultSet.fromUserCommandLine(cmd, variables);
+        const strResult = result.asPresentationString(`${props.setName}.${label}`, true);
+        console.log(strResult);
+        //TODO: Look for a notify component with html templates
     }
 
     const onLabelChange = (event) => {
         const { value } = event.target;
         setLabel(value);
-        if (!didLabelChange) {
-            setDidLabelChange(true);
-        }
+        !didLabelChange && setDidLabelChange(true);
         setIsLabelValid(isDiceRollLabelValid(props.set, value, prevLabel));
     }
 
     const onCommandChange = (event) => {
         const { value } = event.target;
         setCommad(value);
-        if (!didCommandChange) {
-            setDidCommandChange(true);
+        !didCommandChange && setDidCommandChange(true);
+        const [isCommandValid, validationMessage] = isDiceRollCommandValid(value);
+        setIsCommandValid(isCommandValid);
+        if (isCommandValid) {
+            setCommandValidationMessage('');
         }
-        setIsCommandValid(isDiceRollCommandValid(value));
-    }
-
-    const hideAllToolTips = () => {
-        setEditTooltipVisible(false);
-        setDeleteTooltipVisible(false);
-        setConfirmEditTooltipVisible(false);
-        setCancelEditTooltipVisible(false);
-        setRollTooltipVisible(false);
+        else {
+            setCommandValidationMessage(validationMessage);
+        }
     }
 
     const onFormKeyUp = (event) => {
@@ -145,24 +129,10 @@ const UserDiceRollItemForm = (props) => {
         }
     }
 
-    const removeDiceRollPopover = (innerProps) => (
-        <Popover onClick={(event) => event.stopPropagation()} id='popover-basic' {...innerProps}>
-            <Popover.Title as='h3'>Remove Dice Roll Command</Popover.Title>
-            <Popover.Content>
-                <DeleteConfirmationForm
-                    onBtnConfirmClick={() => {
-                        setRemoveDiceRollPopOverVisible(false);
-                        dispatch(diceRollDeleted(props.set.name, label));
-                    }}
-                    onBtnCancelClick={() => setRemoveDiceRollPopOverVisible(false)} />
-            </Popover.Content>
-        </Popover>
-    );
-
     return (
         <Form onKeyUp={onFormKeyUp} onSubmit={(event) => event.preventDefault()}>
             <Form.Row>
-                <Form.Group as={Col} sm={4} controlId="diceLabel" style={{ marginBottom: "5px" }}>
+                <Form.Group as={Col} sm={4} style={{ marginBottom: "5px" }}>
                     <Form.Control
                         size="sm"
                         isValid={didLabelChange && isLabelValid}
@@ -172,9 +142,9 @@ const UserDiceRollItemForm = (props) => {
                         value={label}
                         onChange={onLabelChange}
                     />
-                    <div style={didLabelChange && !isLabelValid ? { "display": "block" } : { "display": "none" }} className='invalid-feedback'>Dice roll command label should be unique in the set, not be empty, and can't contain spaces or dots</div>
+                    <InvalidInputFeedbackText visible={didLabelChange && !isLabelValid} text="Dice roll command label should be unique in the set, not be empty, and can't contain spaces or dots" />
                 </Form.Group>
-                <Form.Group as={Col} sm={6} controlId="diceCmd" style={{ marginBottom: "5px" }}>
+                <Form.Group as={Col} sm={6} style={{ marginBottom: "5px" }}>
                     <Form.Control
                         size="sm"
                         isValid={didCommandChange && isCommandValid}
@@ -184,99 +154,65 @@ const UserDiceRollItemForm = (props) => {
                         value={command}
                         onChange={onCommandChange}
                     />
-                    <div style={didCommandChange && !isCommandValid ? { "display": "block" } : { "display": "none" }} className='invalid-feedback'>Dice roll command should be a valid dice roll command, check docs for examples</div>
+                    <InvalidInputFeedbackText visible={didCommandChange && !isCommandValid} text={commandValidationMessage || "Dice roll command should be a valid dice roll command, check docs for examples"} />
                 </Form.Group>
                 {isEditing ?
                     (
-                        <>
-                            <ButtonGroup style={{ marginLeft: "9px" }}>
-                                <Button
-                                    size="sm"
-                                    disabled={!isLabelValid || !isCommandValid}
-                                    ref={btnConfirmRef}
-                                    style={{ marginRight: "5px" }}
-                                    onClick={onBtnConfirmClick}
-                                    onMouseEnter={(event) => onBtnMouseEnter(btnConfirmTooltipTimeoutRef, setConfirmEditTooltipVisible)}
-                                    onMouseLeave={(event) => onBtnMouseLeave(btnConfirmTooltipTimeoutRef)}
-                                    onBlur={(event) => onBtnMouseLeave(btnConfirmTooltipTimeoutRef)}
-                                    variant="success"
-                                    className='btn-fa-circle-sm'>
-                                    <FontAwesomeIcon icon={faCheck} />
-                                </Button>
-                                <Button
-                                    size="sm"
-                                    ref={btnCancelRef}
-                                    style={{ marginRight: "5px" }}
-                                    onClick={onBtnCancelClick}
-                                    onMouseEnter={(event) => onBtnMouseEnter(btnCancelTooltipTimeoutRef, setCancelEditTooltipVisible)}
-                                    onMouseLeave={(event) => onBtnMouseLeave(btnCancelTooltipTimeoutRef)}
-                                    onBlur={(event) => onBtnMouseLeave(btnCancelTooltipTimeoutRef)}
-                                    variant="warning"
-                                    className='btn-fa-circle-sm'>
-                                    <FontAwesomeIcon icon={faTimes} />
-                                </Button>
-                            </ButtonGroup>
-                            <Overlay target={btnConfirmRef.current} show={confirmEditTooltipVisible} placement="bottom">
-                                {(props) => <Tooltip id="confirm-edit-dice-roll-tooltip" {...props}>Confirm edit</Tooltip>}
-                            </Overlay>
-                            <Overlay target={btnCancelRef.current} show={cancelEditTooltipVisible} placement="bottom">
-                                {(props) => <Tooltip id="cancel-edit-dice-roll-tooltip" {...props}>Cancel edit</Tooltip>}
-                            </Overlay>
-                        </>
+                        <ButtonGroup style={{ marginLeft: "9px" }}>
+                            <ButtonWithTolltip
+                                disabled={!isLabelValid || !isCommandValid}
+                                style={{ marginRight: "5px" }}
+                                onClick={onBtnConfirmClick}
+                                variant="success"
+                                faIcon={faCheck}
+                                tooltipText={"Confirm edit"}
+                            />
+                            <ButtonWithTolltip
+                                onClick={onBtnCancelClick}
+                                variant="warning"
+                                faIcon={faTimes}
+                                tooltipText={"Cancel edit"}
+                            />
+                        </ButtonGroup>
                     ) :
                     (
-                        <>
-                            <ButtonGroup style={{ marginLeft: "9px" }}>
-                                <Button
-                                    size="sm"
-                                    ref={btnRollRef}
-                                    style={{ marginRight: "5px" }}
-                                    onClick={onBtnRollClick}
-                                    onMouseEnter={(event) => onBtnMouseEnter(btnRollTooltipTimeoutRef, setRollTooltipVisible)}
-                                    onMouseLeave={(event) => onBtnMouseLeave(btnRollTooltipTimeoutRef)}
-                                    onBlur={(event) => onBtnMouseLeave(btnRollTooltipTimeoutRef)}
-                                    variant="primary"
-                                    className='btn-fa-circle-sm'>
-                                    <FontAwesomeIcon icon={faDice} style={{ fontSize: "16px" }} />
-                                </Button>
-                                <Button
-                                    size="sm"
-                                    ref={btnEditRef}
-                                    style={{ marginRight: "5px" }}
-                                    onClick={onBtnEditClick}
-                                    onMouseEnter={(event) => onBtnMouseEnter(btnEditTooltipTimeoutRef, setEditTooltipVisible)}
-                                    onMouseLeave={(event) => onBtnMouseLeave(btnEditTooltipTimeoutRef)}
-                                    onBlur={(event) => onBtnMouseLeave(btnEditTooltipTimeoutRef)}
-                                    variant="success"
-                                    className='btn-fa-circle-sm'>
-                                    <FontAwesomeIcon icon={faEdit} style={{ fontSize: "16px" }} />
-                                </Button>
-                                <Button
-                                    size="sm"
-                                    ref={btnDeleteRef}
-                                    style={{ marginRight: "5px" }}
-                                    onClick={onBtnDeleteClick}
-                                    onMouseEnter={(event) => onBtnMouseEnter(btnDeleteTooltipTimeoutRef, setDeleteTooltipVisible)}
-                                    onMouseLeave={(event) => onBtnMouseLeave(btnDeleteTooltipTimeoutRef)}
-                                    onBlur={(event) => onBtnMouseLeave(btnDeleteTooltipTimeoutRef)}
-                                    variant="danger"
-                                    className='btn-fa-circle-sm'>
-                                    <FontAwesomeIcon icon={faMinus} />
-                                </Button>
-                            </ButtonGroup>
-                            <Overlay target={btnRollRef.current} show={rollTooltipVisible} placement="bottom">
-                                {(props) => <Tooltip id="roll-dice-roll-tooltip" {...props}>Roll dice!</Tooltip>}
-                            </Overlay>
-                            <Overlay target={btnEditRef.current} show={editTooltipVisible} placement="bottom">
-                                {(props) => <Tooltip id="edit-dice-roll-tooltip" {...props}>Click to edit this dice roll command</Tooltip>}
-                            </Overlay>
-                            <Overlay target={btnDeleteRef.current} show={deleteTooltipVisible && !removeDiceRollPopOverVisible} placement="bottom">
-                                {(props) => <Tooltip id="delete-dice-roll-tooltip" {...props}>Click to remove this dice roll command</Tooltip>}
-                            </Overlay>
-                            <Overlay target={btnDeleteRef.current} show={removeDiceRollPopOverVisible} placement="bottom">
-                                {(props) => removeDiceRollPopover(props)}
-                            </Overlay>
-                        </>
+                        <ButtonGroup style={{ marginLeft: "9px" }}>
+                            <ButtonWithTolltip
+                                style={{ marginRight: "5px" }}
+                                onClick={onBtnRollClick}
+                                variant="primary"
+                                faCrudIcon={faSync}
+                                faIcon={faDiceD20}
+                                faStyle={{ fontSize: "16px" }}
+                                tooltipText={"Roll dice!"}
+                            />
+                            <ButtonWithTolltip
+                                style={{ marginRight: "5px" }}
+                                onClick={onBtnEditClick}
+                                variant="success"
+                                faIcon={faEdit}
+                                faStyle={{ fontSize: "16px" }}
+                                tooltipText={"Click to edit this dice roll command"}
+                            />
+                            <ButtonWithTolltip
+                                showTooltip={!removeDiceRollPopOverVisible}
+                                getRefFunc={(ref) => btnDeleteRef.current = ref.current}
+                                onClick={() => setRemoveDiceRollPopOverVisible(!removeDiceRollPopOverVisible)}
+                                variant="danger"
+                                faCrudIcon={faMinus}
+                                faIcon={faDiceD20}
+                                tooltipText={"Click to remove this dice roll command"}
+                            />
+                            <FormPopoverContainer ref={btnDeleteRef} show={removeDiceRollPopOverVisible} title="Remove Dice Roll Command">
+                                <DeleteConfirmationForm
+                                    onBtnConfirmClick={() => {
+                                        setRemoveDiceRollPopOverVisible(false);
+                                        dispatch(diceRollDeleted(props.setName, label));
+                                    }}
+                                    onBtnCancelClick={() => setRemoveDiceRollPopOverVisible(false)}
+                                />
+                            </FormPopoverContainer>
+                        </ButtonGroup>
                     )
                 }
             </Form.Row>

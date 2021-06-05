@@ -29,14 +29,7 @@ class DiceRollResult {
         if (!sides || sides < 1) {
             throw "Number of sides should be a number greater than 0";
         }
-
-        const step = 1 / sides;
-        const rad = Math.random();
-        const sub = 1 - rad;
-        if (sub === 0) {
-            sub = 0.000000000001;
-        }
-        return Math.ceil(sub / step);
+        return Math.floor(Math.random() * sides + 1);
     }
 
     /**
@@ -123,7 +116,7 @@ class DiceRollResult {
      * 
      * @returns {String} The string used to present this object's results to the user.
      */
-    asPresentationString = (rollLabel) => {
+    asPresentationString = () => {
         const {
             rolls,
             successes,
@@ -140,7 +133,7 @@ class DiceRollResult {
             command
         } = this;
 
-        return `${rollLabel ? `${rollLabel} => `: ''}${command}:\n\t (${rolls.join(', ')})${plus ? ` +${plus} ` : minus ? ` -${minus} ` : times ? ` *${times} ` : ''}${successes !== null ? ` Successes: ${successes}` : ''} Total: ${sum}${target ? ` >= ${target},` : negate ? ` <= ${negate},` : ''}${success !== null ? success ? ` SUCCESS ` : ` FAILURE ` : ''}\n`;
+        return `${command}:\n\t (${rolls.join(', ')})${plus ? `+${plus} ` : minus ? `-${minus} ` : times ? `*${times} ` : ''}${successes !== null ? ` Successes: ${successes}` : ''} Total: ${sum}${target ? ` >= ${target},` : negate ? ` <= ${negate},` : ''}${success !== null ? success ? ` SUCCESS ` : ` FAILURE ` : ''}\n`;
     }
 
     /**

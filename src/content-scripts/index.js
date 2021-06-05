@@ -1,71 +1,54 @@
 import DiceRollResultSet from '../models/dice-roll-result-set'
+import $ from 'jquery';
+import 'jquery-ui/ui/widgets/draggable';
+import 'jquery-ui/ui/widgets/resizable';
+
+$(function () {
+    var $container = $("#dice-roller-container")
+    $container.draggable({ containment: "body", handle: '.navbar-dark' });
+    $container.hide();
+    var $btnToggle = $("<div id='dice-roller-toggle-button'>");
+    $("body").append(
+        $btnToggle
+            .draggable({ containment: "body" })
+            .append('<img src="chrome-extension://' + (chrome.runtime ? chrome.runtime.id : '') + '/icons/64.png" />')
+            .css("position", "absolute")
+            .css("top", "65px")
+            .css("left", "16px")
+            .css("z-index", "2")
+            .css("border", "0")
+            .css("cursor", "pointer")
+            .css("border-radius", "50%")
+            .on("click", function (event) {
+                $container.css("top", $btnToggle.css("top")).css("left", $btnToggle.css("left"));
+                $btnToggle.hide({
+                    duration: 200,
+                    complete: () => {
+                        $container.show({
+                            duration: 200
+                        });
+                    }
+                });
+            }));
+});
 
 var sets = {};
 
-function setsArrayToHashSet(setsInStorage) {
-    for (var i = 0; i < setsInStorage.length; i++) {
-        var set = setsInStorage[i];
-        sets[set.name] = {};
-        if (set.items && set.items.length > 0) {
-            for (var j = 0; j < set.items.length; j++) {
-                var item = set.items[j];
-                sets[set.name][item.label] = item.command;
-            }
-        }
-    }
-}
-
 if (chrome && chrome.storage) {
     chrome.storage.sync.get(["gmdrsets"], function (result) {
-        var setsInStorage = result["gmdrsets"];
-        if (setsInStorage && setsInStorage.length > 0) {
-            setsArrayToHashSet(setsInStorage);
-        }
+        sets = result["gmdrsets"] || {};
     });
 
     chrome.storage.onChanged.addListener(function (changes) {
         var newSetsInStorage = changes["gmdrsets"];
         if (newSetsInStorage && newSetsInStorage["newValue"]) {
-            sets = {}
-            setsArrayToHashSet(newSetsInStorage["newValue"]);
-        }
-    });
-}
-
-if (chrome && chrome.runtime) {
-    chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-        if (typeof (message) === "object" && message.type === "onBtnRollClick") {
-            var chatTextInput = document.getElementsByName("chatTextInput")[0];
-            chatTextInput.value = "roll " + message.payload;
-            var event = new KeyboardEvent("keydown", {
-                key: "Enter",
-                code: "Enter",
-                keyCode: 13,
-                altKey: false,
-                bubbles: true,
-                cancelBubble: false,
-                cancelable: true,
-                charCode: 0,
-                composed: true,
-                ctrlKey: false,
-                defaultPrevented: false,
-                detail: 0,
-                eventPhase: 1,
-                isComposing: false,
-                isTrusted: true,
-                location: 0,
-                metaKey: false,
-                repeat: false,
-                returnValue: true,
-                shiftKey: false
-            });
-            chatTextInput.dispatchEvent(event);
+            sets = newSetsInStorage["newValue"]
         }
     });
 }
 
 document.addEventListener("keydown", event => {
-    if (event.keyCode === 13 && event.target.name === "chatTextInput" && (event.target.value.startsWith('roll') || event.target.value.startsWith('/r'))) {
+    if (event.key === "Enter" && event.target.name === "chatTextInput" && (event.target.value.startsWith('roll') || event.target.value.startsWith('/r'))) {
         var rollLabel = event.target.value.startsWith('/r') ? event.target.value.substring('/r'.length).trim() : event.target.value.substring('roll'.length).trim();
 
         var hasDot = rollLabel.indexOf(".") > 0;
@@ -74,9 +57,10 @@ document.addEventListener("keydown", event => {
         if (tokens.length === 2) {
             var set = sets[tokens[0]];
             if (set) {
-                var command = set[tokens[1]];
+                var command = set["commands"][tokens[1]];
+                var variables = set["variables"];
                 if (command) {
-                    const result = DiceRollResultSet.fromUserCommandLine(command);
+                    const result = DiceRollResultSet.fromUserCommandLine(command, variables);
                     event.target.value = result ? result.asPresentationString(rollLabel) : event.target.value;
                 }
             }
