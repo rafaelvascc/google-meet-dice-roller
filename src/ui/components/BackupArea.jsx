@@ -21,8 +21,10 @@ const BackupArea = (props) => {
     const checkJsonValidTimeoutRef = useRef(null);
 
     const ontxtRestoreChange = (event) => {
+        setIsRestoreValid(false);
         const { value } = event.target;
         !restoreTxtChanged && setRestoreTxtChanged(true);
+        setRestoreTxt(value);
         if (checkJsonValidTimeoutRef.current) {
             clearTimeout(checkJsonValidTimeoutRef.current);
         }
@@ -32,7 +34,6 @@ const BackupArea = (props) => {
                 setIsRestoreValid(restoreValid);
                 if (restoreValid) {
                     setRestoreValidationError('');
-                    setRestoreTxt(value);
                 }
                 else {
                     setRestoreValidationError(error);
@@ -48,6 +49,7 @@ const BackupArea = (props) => {
     const onBtnConfirmClick = (event) => {
         dispatch(importDiceRollSets(JSON.parse(restoreTxt)));
         setRestoreTxtChanged(false);
+        setRestoreTxt('');
     }
 
     return (
@@ -73,6 +75,7 @@ const BackupArea = (props) => {
                             as="textarea"
                             rows={12}
                             onChange={ontxtRestoreChange}
+                            value={restoreTxt}
                             isValid={isRestoreValid && restoreTxtChanged}
                             isInvalid={!isRestoreValid && restoreTxtChanged}
                         />

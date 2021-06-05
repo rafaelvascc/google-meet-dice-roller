@@ -5,17 +5,11 @@ Dice roller extension for RPG players using Google Meet on Google Chrome or Micr
 
 If you're seeing this page, probably the Google Meet Dice Roller extension was just installed or updated... Better read these docs to keep up with changes.
 
-# Important, About the "Browsing History Access" permission
+# The "Browsing History Access" permission is no longer necessary
 
-This extension **does NOT** access your browsing/navigation history, period.
+On the previous version, the "Roll Dice!" button in the user interface used to use the [chrome tabs api](https://developer.chrome.com/docs/extensions/reference/tabs/). By simply requesting access to use this api, the extension was marked as "requiring browser history".
 
-Why it asks for Browsing History Access Permission? Glad you asked.
-
-Because the "Roll Dice!" button in the user interface needs to use the [chrome tabs api](https://developer.chrome.com/docs/extensions/reference/tabs/). By simply requesting access to use this api, the extension is marked as "requiring browser history".
-
-This api is used for the button to find the tab where Google Meet is running and sends a message to this tab. This message triggers an event that make the "Roll Dice!" button work.
-
-You can check this piece of code [here](https://github.com/rafaelvascc/google-meet-dice-roller/blob/eb19b9c7cb2aa3e1361bd2ec523da607ea5e1628/src/ui/components/UserDiceRollItemForm.jsx#L96) and [here](https://github.com/rafaelvascc/google-meet-dice-roller/blob/eb19b9c7cb2aa3e1361bd2ec523da607ea5e1628/src/content-scripts/index.js#L36).
+This api isn't necessary anymore, so the extension will no longer require access to browsing history.
 
 ## For Microsoft Edge Users
 
@@ -71,22 +65,98 @@ In Google Meet's chat window's text input, use the **/r** or **roll** commands a
 
 You can type any positive integer for the dice "faces". You can use the traditionals **d2, d4, d6, d8, d10, d12, d20, d100** or just funcky stuff like **d37, d23, d145, ETC...**
 
-#### Command Regular Expression
-Here is the regular expresion used to validate commands if you're curious...
-```javascript
-/^((([+-]*)(\d*)d(\d+)(([hl])(\d+))?(([dm])(\d+))?(([\*+-])(\d+))?(([tn])(\d+))?)|\s|(([+-])(\d+)))+$/
-```
 ## User Interface
 
-You can create a **collection** of **dice roll sets** on the user interface. Each set has a **name**, and **the set name should be unique** among the sets in your collection.
+**The user interface can be used in the Google Meet's page itself.** 
 
-Dice roll sets can have many **dice roll commands**. Commands in a set have a **label** that also **should be unique** among commands in the same set. Commands in the dice roll set should be **valid commands** like the ones in the *Command Examples* section above, **without** the **/r** or **roll** parts.
+On the user interface you can create new **dice roll sets**, **dice roll commands** and **variables/epxressions**.
+
+Set names, commands labels and variables labels **can't contain spaces, tabs** and the following characters: `. + - * / \ {} () []`.
 
 ![ui_1](./docs/ui_1.gif)
 
-You can **delete a dice roll set** from your collection using the **"red/minus" delete button**. You can also **delete a dice roll command** from it's set using the **"red/minus" delete button**. A pop up will apear for confirming or canceling deletion on both cases.
+## Creating dice roll sets
 
-You can **edit** a dice roll command using the **green/edit button**. While editing a dice roll command, other buttons will apear for confirming or canceling the changes.
+You can create a **collection** of **dice roll sets** on the user interface. Each set has a **name**, and **the set name should be unique** among the sets in your collection.
+
+![ui_2](./docs/ui_2.gif)
+
+## Creating dice roll commands
+
+Dice roll sets can have many **dice roll commands**. Commands in a set have a **label** that also **should be unique** among commands in the same set. Commands in the dice roll set should be **valid commands** like the ones in the *Command Examples* section above, **without** the **/r** or **roll** parts. **Also dice roll commands can use variables/expressions (see bellow).**
+
+![ui_3](./docs/ui_3.gif)
+
+## Creating variables/expressions
+
+Dice roll sets can now have variables. **Variables are numbers or simple mathematical expressions that can be used in your dice roll commands.** Think of them as the character's attributes in the character sheet.
+
+![ui_4](./docs/ui_4.gif)
+
+Variables can be:
+- **Integer numbers** like 1, 20, -34, etc...
+- **Mathematical expressions** like:
+  - `1+2`
+  - `2-1`
+  - `-30+40`
+  - `1+2+3+4`
+  - `1*2+3+4`
+  - `1*(2+3)-4`
+  - `10/(3-1)`
+  - `round(10/3)`
+  - `floor(10/3)`
+  - `ceil(10/3)`
+  - `round(10/3)+4*(ceil(20+(50-2)*6))` (i think no one will use something THAT complicated)
+
+You can create expressions using the mathematical operators `+ - * and /` (adding, subtracting, multiplying and dividing). You can also use the functions `round(), ceil() and floor()`. 
+
+The operators are evaluated from left to right, with multiplication and division operations having a higher precedence than additions and subtractions. As in school mathematics, wrap sub expressions with `()` to change operation precedence.
+
+**Other variables can also be used in expressions**. For that you need to wrap the variable label in `{}`.  So something like `10*{other_variable}+3*{also_another_variable}` is also a valid expression. **An expression can never call itself or make another expression call itself.**
+
+**Expressions should always return an integer number.**
+
+Expressions are evaluated by the [Math.js](https://mathjs.org/) library.
+
+## Using variables/expressions on dice roll commands
+
+Variables/expression can be used with dice roll commands on the **"dice count" part** or the **"constant" part** of the commands. For instance, on the command `10d6+5`, `10` is the **"dice count"** and `+5` is the **"constant"**.
+
+You can use more than one variables and mix variables with numbers on those parts like the examples bellow:
+
+- `1d12+{strength_mod}`
+- `1d12+{strength_mod}+{weapon_mod}`
+- `{charisma}d10`
+- `{dexterity}+{firearms}d10`
+- `1d12+{strength_mod}+20`
+- `1d12+{strength_mod}+{weapon_mod}+20`
+- `{dexterity}+{firearms}+2d10`
+
+Teh allowed operators on the **"dice count"** part are `+ -`, and on the **"constant part"** are `+ - *`. 
+
+## Editing dice roll commands and variables/expressions
+
+You can **edit** a dice roll commands and variables/expressions using the **green/edit button**. While in edit mode, other buttons will apear for confirming or canceling the changes.
+
+![ui_5](./docs/ui_5.gif)
+
+## Deleting stuff
+
+You can delete dice roll sets, commands and variables/expressions using their corresponding red/minus buttons. A pop up will always ask for confirmation before delete.
+
+![ui_6](./docs/ui_6.gif)
+
+## Export and import data
+
+You can backup you dice roll collection using the new backup button. The backup data is a **json** object. Since the extension can't access the file system, you need to copy the data and save somewhere using notepad or any other text editor.
+
+![ui_7](./docs/ui_7.gif)
+
+You can restore a previously saved backup, or import someone else's dice roll collection, using the importe button besides the backup button. **This operation won't replace your collection with another one, it will add the imported data to your existing collection.**. If there are conflicts with dice roll sets names, commands or variables labels, the existing ones on your collection won't be replaced. 
+
+The imported data should be a valid dice roll collection. **All set names, labels, commands and variables will be validated.**
+
+![ui_8](./docs/ui_8.gif)
 
 ## Using saved dice roll commands
 
@@ -123,6 +193,19 @@ Since I'm too lazy to see emails and thank each one that donated, I will leave a
 
 # Changelog
 
+## [1.1.0] - 2021-06-05
+
+### Added
+- Backup/restore functionality
+- Variables/expressions
+  
+### Changed
+- UI is now attached to Google Meet's page
+- No more dependent from the chrome.tabs api
+  
+### Fixes
+- Using a new dice roll function based on the [MDN's Math.random() docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random).  
+
 ## [1.0.1] - 2021-05-24
 
 ### Fixes
@@ -144,11 +227,4 @@ Since I'm too lazy to see emails and thank each one that donated, I will leave a
 - Fixed subtracting constant value in commands like /r 2d6-1 
 
 # Planned features (no date yet)
-- User variables to dice roll sets
-- Backup/Export and Restore/Import buttons
-- Make the UI a floating pop up (don't know if it is possible yet)
 - Add a "options" tab with some requested options like "Sort rolled dice: {true} or {false}"
-
-# Tech debt
-- Make button with tooltip a React component 
-- Migrate to manifest v3 
