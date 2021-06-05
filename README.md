@@ -132,7 +132,7 @@ You can use more than one variables and mix variables with numbers on those part
 - `1d12+{strength_mod}+{weapon_mod}+20`
 - `{dexterity}+{firearms}+2d10`
 
-Teh allowed operators on the **"dice count"** part are `+ -`, and on the **"constant part"** are `+ - *`. 
+The allowed operators on the **"dice count"** part are `+ -`, and on the **"constant part"** are `+ - *`. 
 
 ## Editing dice roll commands and variables/expressions
 
@@ -188,6 +188,14 @@ Second, I don't want to turn something I made for myself, for fun and to mess wi
 If you liked the extension and are feeling generous, on the UI's header there is a **Donate** button. You may send me money for a coffee with it or just use the "donate" button bellow. If you're feeling REALLY generous, you can send me enough for a RTX 3080. :grin:
 
 [![btn_donate_LG.gif](./docs/btn_donate_LG.gif)](https://www.paypal.com/donate/?hosted_button_id=8P3F8ZGPH9L34)
+
+Se você for do Brasil, pode doar usando o Pix. (If you're from Brazil you can donate using Pix)
+
+<img src="./docs/pix-106.png" alt="pix_logo" width="300" height=""/>
+
+`f49d2b33-4446-4c95-99b7-816623c8be32`.
+
+<img src="./docs/pix_qr.png" alt="pix_qr" width="300"/>
 
 Since I'm too lazy to see emails and thank each one that donated, I will leave a great **"Thanks"** here in advance.
 
