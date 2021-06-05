@@ -13,7 +13,7 @@ $(function () {
             .draggable({ containment: "body" })
             .append('<img src="chrome-extension://' + (chrome.runtime ? chrome.runtime.id : '') + '/icons/64.png" />')
             .css("position", "absolute")
-            .css("top", "60px")
+            .css("top", "65px")
             .css("left", "16px")
             .css("z-index", "2")
             .css("border", "0")
@@ -48,7 +48,7 @@ if (chrome && chrome.storage) {
 }
 
 document.addEventListener("keydown", event => {
-    if (event.keyCode === 13 && event.target.name === "chatTextInput" && (event.target.value.startsWith('roll') || event.target.value.startsWith('/r'))) {
+    if (event.key === "Enter" && event.target.name === "chatTextInput" && (event.target.value.startsWith('roll') || event.target.value.startsWith('/r'))) {
         var rollLabel = event.target.value.startsWith('/r') ? event.target.value.substring('/r'.length).trim() : event.target.value.substring('roll'.length).trim();
 
         var hasDot = rollLabel.indexOf(".") > 0;
