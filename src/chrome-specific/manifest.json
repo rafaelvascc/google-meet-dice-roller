@@ -18,8 +18,9 @@
     "web_accessible_resources": [
         {
             "resources": [
-                "ui/*.png",                
-                "icons/*.png"
+                "ui/*.png",
+                "icons/*.png",
+                "assets/*.png"
             ],
             "matches": [
                 "*://meet.google.com/*"

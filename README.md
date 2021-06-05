@@ -193,7 +193,7 @@ Se você for do Brasil, pode doar usando o Pix. (If you're from Brazil you can d
 
 <img src="./docs/pix-106.png" alt="pix_logo" width="300" height=""/>
 
-`f49d2b33-4446-4c95-99b7-816623c8be32`.
+`f49d2b33-4446-4c95-99b7-816623c8be32`
 
 <img src="./docs/pix_qr.png" alt="pix_qr" width="300"/>
 

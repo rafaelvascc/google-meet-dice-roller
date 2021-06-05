@@ -36,6 +36,17 @@ const ButtonWithTolltip = (props) => {
 
     const renderComponent = () => {
         switch (props.type) {
+            case "image": {
+                return (
+                    <img ref={btnRef}
+                        onMouseEnter={onMouseEnter}
+                        onMouseLeave={onMouseLeave}
+                        onClick={props.onClick}
+                        style={props.style}
+                        src={props.src}
+                    />
+                )
+            }
             case "icon": {
                 return (
                     <span ref={btnRef}>
