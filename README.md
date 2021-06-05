@@ -165,7 +165,7 @@ A saved dice roll command can be used in two ways:
 
 ![using_saved_1](./docs/using_saved_1.gif)
 
-- Simply use the blue "**roll dice button**" besides the commands while **Google Meet is the active tab**.
+- Simply use the blue "**roll dice button**" besides the commands **while Google Meet's chat area is visible**.
 
 ![using_saved_2](./docs/using_saved_2.gif)
 
