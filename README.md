@@ -202,6 +202,8 @@ Since I'm too lazy to see emails and thank each one that donated, I will leave a
 ### Changed
 - UI is now attached to Google Meet's page
 - No more dependent from the chrome.tabs api
+- Using hash tables based data instead of arrays
+- Many React components improvements 
   
 ### Fixes
 - Using a new dice roll function based on the [MDN's Math.random() docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random).  
