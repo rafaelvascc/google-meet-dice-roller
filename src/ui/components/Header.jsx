@@ -9,23 +9,32 @@ const Header = () => {
     const pixImgRef = useRef(null);
     const [pixQrVisible, setPixQrVisible] = useState(false);
 
+    const getImagePath = (imagePath) => {
+        if (chrome && chrome.runtime) {
+            return chrome.runtime.getURL(imagePath);
+        }
+        if (browser && browser.runtime) {
+            return browser.runtime.getURL(imagePath);
+        }
+    }
+
     return (
         <Navbar bg='dark' variant='dark'>
             <Navbar.Brand>
                 <img
                     alt=''
-                    src={chrome.runtime ? `chrome-extension://${chrome.runtime.id}/icons/128.png` : "chrome-extension://dicbnbffchgjndpgeibmbpiciapnghbg/icons/128.png"}
+                    src={getImagePath("icons/128.png")}
                     width='30'
                     height='30'
                     className='d-inline-block align-top'
                 />{' '}
-            Google Meet Dice Roller
+                Google Meet Dice Roller
             </Navbar.Brand>
             <div style={{ marginLeft: "auto", marginRight: "9px" }}>
                 <ButtonWithTolltip
                     type='image'
                     tooltipText="Doar com Pix (Donate with Pix)"
-                    src={chrome.runtime ? `chrome-extension://${chrome.runtime.id}/assets/pix-logo-only.png` : "chrome-extension://dicbnbffchgjndpgeibmbpiciapnghbg/assets/pix-logo-only.png"}
+                    src={getImagePath("assets/pix-logo-only.png")}
                     style={{ width: "20px", cursor: "pointer", marginRight: "8px", paddingBottom: "5px" }}
                     getRefFunc={ref => pixImgRef.current = ref.current}
                     onClick={(event) => {
@@ -79,7 +88,7 @@ const Header = () => {
                 <FormPopoverContainer ref={pixImgRef} show={pixQrVisible} placement={"bottom"} title="Pix QR Code" style={{ maxWidth: "1000px", width: "auto" }}>
                     <img
                         alt=''
-                        src={chrome.runtime ? `chrome-extension://${chrome.runtime.id}/assets/pix_qr.png` : "chrome-extension://dicbnbffchgjndpgeibmbpiciapnghbg/assets/pix_qr.png"}
+                        src={getImagePath("assets/pix_qr.png")}
                         width='300'
                         height='300'
                     />

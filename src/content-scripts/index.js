@@ -3,6 +3,17 @@ import $ from 'jquery';
 import 'jquery-ui/ui/widgets/draggable';
 import 'jquery-ui/ui/widgets/resizable';
 
+
+const getImagePath = (imagePath) => {
+    if (chrome && chrome.runtime) {
+        return chrome.runtime.getURL(imagePath);
+    }
+    if (browser && browser.runtime) {
+        return browser.runtime.getURL(imagePath);
+    }
+}
+
+
 $(function () {
     var $container = $("#dice-roller-container")
     $container.draggable({ containment: "body", handle: '.navbar-dark' });
@@ -11,7 +22,7 @@ $(function () {
     $("body").append(
         $btnToggle
             .draggable({ containment: "body" })
-            .append('<img src="chrome-extension://' + (chrome.runtime ? chrome.runtime.id : '') + '/icons/64.png" />')
+            .append('<img src="' + getImagePath("icons/64.png") + '"/>')
             .css("position", "absolute")
             .css("top", "65px")
             .css("left", "16px")
