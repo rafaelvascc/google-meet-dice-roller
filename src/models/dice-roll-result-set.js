@@ -73,8 +73,13 @@ class DiceRollResultSet {
                     }
                     if (constant) {
                         const constOp = constant[0];
-                        const constExp = constOp === '*' ? constant.slice(1) : constant;
-                        newInput += constOp + (math.eval(constExp) || NaN);
+                        if (constOp === '*') {
+                            const constExp = constOp === '*' ? constant.slice(1) : constant;
+                            newInput += constOp + (math.eval(constExp) || NaN);
+                        }
+                        else { 
+                            newInput += (math.eval(constant) || NaN);
+                        }
                     }
                     if (tn) {
                         newInput += tn;
@@ -84,7 +89,7 @@ class DiceRollResultSet {
                 if (constOnlyRegexNoGlobal.test(input)) {
                     const { constExp } = constOnlyRegexNoGlobal.exec(input).groups;
                     const retVal = math.eval(constExp);
-                    input += retVal >= 0 ? `+${retVal}` : retVal;
+                    input = retVal >= 0 ? `+${retVal}` : retVal;
                 }
             }
         }
