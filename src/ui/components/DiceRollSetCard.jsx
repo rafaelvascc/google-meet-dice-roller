@@ -68,13 +68,15 @@ const DiceRollSetCard = (props) => {
                             <Form.Label>Command</Form.Label>
                         </Form.Group>
                     </Form.Row>
-                    {
-                        Object.keys(props.set.commands).map((k) => {
-                            return (
-                                <UserDiceRollItemForm key={k} setName={props.setName} set={props.set} label={k} command={props.set.commands[k]} />
-                            )
-                        })
-                    }
+                    <div className="scrollable-collection">
+                        {
+                            Object.keys(props.set.commands).map((k) => {
+                                return (
+                                    <UserDiceRollItemForm key={k} setName={props.setName} set={props.set} label={k} command={props.set.commands[k]} />
+                                )
+                            })
+                        }
+                    </div>
                 </>
             );
         }
@@ -89,13 +91,15 @@ const DiceRollSetCard = (props) => {
                             <Form.Label>Variable/Expression</Form.Label>
                         </Form.Group>
                     </Form.Row>
-                    {
-                        Object.keys(props.set.variables).map((k) => {
-                            return (
-                                <UserVariableForm key={k} setName={props.setName} set={props.set} label={k} expression={props.set.variables[k]} />
-                            )
-                        })
-                    }
+                    <div className="scrollable-collection">
+                        {
+                            Object.keys(props.set.variables).map((k) => {
+                                return (
+                                    <UserVariableForm key={k} setName={props.setName} set={props.set} label={k} expression={props.set.variables[k]} />
+                                )
+                            })
+                        }
+                    </div>
                 </>
             );
         }
@@ -130,7 +134,7 @@ const DiceRollSetCard = (props) => {
                                         x="0.18556"
                                         fill="#ffffff">
                                         (X)
-                                        </text>
+                                    </text>
                                 </g>
                             </svg>
                         }
