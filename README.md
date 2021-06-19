@@ -201,6 +201,12 @@ Since I'm too lazy to see emails and thank each one that donated, I will leave a
 
 # Changelog
 
+## [1.1.1] - 2021-06-19
+
+### Fixes
+- Fixed issue with constant calculations as reported [here](https://github.com/rafaelvascc/google-meet-dice-roller/issues/4) 
+- Fixed navigation scrolling as requested [here](https://github.com/rafaelvascc/google-meet-dice-roller/issues/5) 
+
 ## [1.1.0] - 2021-06-05
 
 ### Added

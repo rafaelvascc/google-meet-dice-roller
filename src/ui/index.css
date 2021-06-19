@@ -1,6 +1,5 @@
 #dice-roller-container {
-  max-height: 500px;
-  width : 700px;
+  width : 750px;
   margin: 0;
   z-index: 2 !important;
 }
@@ -40,6 +39,12 @@
 #json-pretty {
   max-height: 700px;
   overflow-y: auto;
+}
+
+.scrollable-collection {
+  max-height: 350px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .__json-pretty__ {

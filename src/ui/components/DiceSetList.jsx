@@ -54,7 +54,7 @@ const DiceSetList = (props) => {
             </Navbar>
             <BackupArea backupVisible={backupVisible} restoreVisible={restoreVisible} />
             {
-                <Accordion>
+                <Accordion style={{ maxHeight: "500px", overflow: "auto" }}>
                     {Object.keys(diceRollCollection).map((k) => {
                         return (
                             <DiceRollSetCard key={k} setName={k} set={diceRollCollection[k]} />
