@@ -207,7 +207,7 @@ Since I'm too lazy to see emails and thank each one that donated, I will leave a
 ## [1.2.0] - 2021-06-20
 
 ### Added
-- Added the possibility to use variables in the `h`,`l`,`t`,`m`,`d` and `n` options as requested [here](https://github.com/rafaelvascc/google-meet-dice-roller/issues/8)
+- Added the possibility to use variables with the `h`,`l`,`t`,`m`,`d` and `n` options as requested [here](https://github.com/rafaelvascc/google-meet-dice-roller/issues/8)
 
 ## [1.1.1] - 2021-06-19
 
