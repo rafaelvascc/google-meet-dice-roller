@@ -48,9 +48,24 @@ class DiceRollResultSet {
                 const variableLabel = match.slice(1, -1);
                 let variable = variables[variableLabel] || "NaN";
                 const variableResult = execVariable(variable, variables);
-                input = input.replaceAll(match, variableResult);
+                if (variableResult < 0) {
+                    input = input.replaceAll(match, '(' + variableResult + ')');
+                }
+                else {
+                    input = input.replaceAll(match, variableResult);
+                }
+                input = input.replaceAll("*+", '*');
+                input = input.replaceAll("++", '+');
+                input = input.replaceAll("--", '+');
+                input = input.replaceAll("+-", '-');
+                input = input.replaceAll("-+", '-');
             }
             if (root) {
+                input = input.replaceAll("*+", '*');
+                input = input.replaceAll("++", '+');
+                input = input.replaceAll("--", '+');
+                input = input.replaceAll("+-", '-');
+                input = input.replaceAll("-+", '-');
                 if (diceCommandRegexNoGlobal.test(input)) {
                     let newInput = '';
                     const subMatches = diceCommandRegexNoGlobal.exec(input);
@@ -75,10 +90,12 @@ class DiceRollResultSet {
                         const constOp = constant[0];
                         if (constOp === '*') {
                             const constExp = constOp === '*' ? constant.slice(1) : constant;
-                            newInput += constOp + (math.eval(constExp) || NaN);
+                            const contantValue = math.eval(constExp);
+                            newInput += constOp + (contantValue >= 0 ? `+${contantValue}` : contantValue);
                         }
-                        else { 
-                            newInput += (math.eval(constant) || NaN);
+                        else {
+                            const contantValue = math.eval(constant);
+                            newInput += contantValue >= 0 ? `+${contantValue}` : contantValue;
                         }
                     }
                     if (tn) {
@@ -93,6 +110,7 @@ class DiceRollResultSet {
                 }
             }
         }
+        input = input.replaceAll("*+", '*');
         return input;
     }
 
