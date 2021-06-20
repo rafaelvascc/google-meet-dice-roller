@@ -1,9 +1,9 @@
 export const labelOrNameRegexStr = '[^.\\s+\\-*(){}\\[\\]/\\\\]+';
 export const diceRegexStr = `(?<diceCount>([+-]?(\\d+|\\{${labelOrNameRegexStr}?\\}))?([+-](\\d+|\\{${labelOrNameRegexStr}?\\}))*)(d(?<sides>\\d+)){1}`;
 export const constRegexStr = `(?<=([dhlm])\\d+)(?<constant>(\\(*(?<constOp>[\\*+-])?\\(*(?<constValue>\\-?\\d+|\\-?\\{${labelOrNameRegexStr}?\\})\\)*)+)`;
-export const hlRegexStr = '(?<hl>(?<hlOp>[hl])(?<hlVal>\\d+))';
-export const dmRegexStr = '(?<=([hl])\\d+)(?<dm>(?<dmOp>[dm])(?<dmVal>\\d+))';
-export const tnRegexStr = '(?<tn>(?<tnOp>[tn])(?<tnVal>\\d+))';
+export const hlRegexStr = `(?<hl>(?<hlOp>[hl])\\(?(?<hlVal>\\-?(\\d+|\\{${labelOrNameRegexStr}?\\}))\\)?)`;
+export const dmRegexStr = `(?<dm>(?<dmOp>[dm])\\(?(?<dmVal>\\-?(\\d+|\\{${labelOrNameRegexStr}?\\}))\\)?)`;
+export const tnRegexStr = `(?<tn>(?<tnOp>[tn])\\(?(?<tnVal>\\-?(\\d+|\\{${labelOrNameRegexStr}?\\}))\\)?)`;
 export const diceCommandRegexStr = `${diceRegexStr}(${hlRegexStr})?(${dmRegexStr})?(${constRegexStr})?(${tnRegexStr})?`;
 export const constOnlyRegexSrt = `(?<constExp>([+-](\\d+|\\{${labelOrNameRegexStr}?\\}))+)`
 
