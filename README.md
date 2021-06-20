@@ -120,7 +120,7 @@ Expressions are evaluated by the [Math.js](https://mathjs.org/) library.
 
 ## Using variables/expressions on dice roll commands
 
-Variables/expression can be used with dice roll commands on the **"dice count" part** or the **"constant" part** of the commands. For instance, on the command `10d6+5`, `10` is the **"dice count"** and `+5` is the **"constant"**.
+Variables/expression can be used with dice roll commands on the **"dice count" part**, the **"constant" part** of the commands or the `h`,`l`,`t`,`m`,`d` and `n` options. For instance, on the command `10d6+5`, `10` is the **"dice count"** and `+5` is the **"constant"**.
 
 You can use more than one variables and mix variables with numbers on those parts like the examples bellow:
 
@@ -131,6 +131,9 @@ You can use more than one variables and mix variables with numbers on those part
 - `1d12+{strength_mod}+20`
 - `1d12+{strength_mod}+{weapon_mod}+20`
 - `{dexterity}+{firearms}+2d10`
+- `5d6h{high_pool}`
+- `5d10d{standard_difficulty}`
+- `1d100n{strength}`
 
 The allowed operators on the **"dice count"** part are `+ -`, and on the **"constant part"** are `+ - *`. 
 
@@ -200,6 +203,11 @@ Se você for do Brasil, pode doar usando o Pix. (If you're from Brazil you can d
 Since I'm too lazy to see emails and thank each one that donated, I will leave a great **"Thanks"** here in advance.
 
 # Changelog
+
+## [1.2.0] - 2021-06-20
+
+### Added
+- Added the possibility to use variables in the `h`,`l`,`t`,`m`,`d` and `n` options as requested [here](https://github.com/rafaelvascc/google-meet-dice-roller/issues/8)
 
 ## [1.1.1] - 2021-06-19
 
