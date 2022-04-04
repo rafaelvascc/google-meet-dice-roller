@@ -203,6 +203,10 @@ Se você for do Brasil, pode doar usando o Pix. (If you're from Brazil you can d
 Since I'm too lazy to see emails and thank each one that donated, I will leave a great **"Thanks"** here in advance.
 
 # Changelog
+## [1.2.1] - 2022-04-03
+
+### Fixes
+- Fixed goodle meet text area not being found by scripts (they removed the textarea name....)
 
 ## [1.2.0] - 2021-06-20
 
