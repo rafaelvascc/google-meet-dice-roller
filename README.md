@@ -206,7 +206,7 @@ Since I'm too lazy to see emails and thank each one that donated, I will leave a
 ## [1.2.1] - 2022-04-03
 
 ### Fixes
-- Fixed goodle meet text area not being found by scripts (they removed the textarea name....)
+- Fixed google meet text area not being found by scripts (they removed the textarea name....)
 
 ## [1.2.0] - 2021-06-20
 
