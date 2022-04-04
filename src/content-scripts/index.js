@@ -59,7 +59,7 @@ if (chrome && chrome.storage) {
 }
 
 document.addEventListener("keydown", event => {
-    if (event.key === "Enter" && event.target.name === "chatTextInput" && (event.target.value.startsWith('roll') || event.target.value.startsWith('/r'))) {
+    if (event.key === "Enter" && event.target.tagName.toLowerCase() === "textarea" && (event.target.value.startsWith('roll') || event.target.value.startsWith('/r'))) {
         var rollLabel = event.target.value.startsWith('/r') ? event.target.value.substring('/r'.length).trim() : event.target.value.substring('roll'.length).trim();
 
         var hasDot = rollLabel.indexOf(".") > 0;

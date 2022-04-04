@@ -58,7 +58,7 @@ const UserDiceRollItemForm = (props) => {
     }
 
     const onBtnRollClick = (event) => {
-        const textAreas = document.getElementsByName("chatTextInput");
+        const textAreas = document.getElementsByTagName("textarea");
         if (textAreas && textAreas[0]) {
             var chatTextInput = textAreas[0];
             chatTextInput.value = `roll ${props.setName}.${label}`;
