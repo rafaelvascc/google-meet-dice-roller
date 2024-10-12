@@ -5,9 +5,17 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "pwa-msedge",
+            "type": "chrome",
             "request": "launch",
-            "name": "Launch Chrome against localhost",
+            "name": "Launch Chrome",
+            "url": "https://meet.google.com/",
+            // Here it is!
+            "runtimeArgs": ["--load-extension=${workspaceFolder}/build"]
+        },
+        {
+            "type": "msedge",
+            "request": "launch",
+            "name": "Launch Edge against localhost",
             "url": "http://localhost:8080",
             "webRoot": "${workspaceFolder}"
         },
@@ -17,6 +25,14 @@
             "name": "Attach to Chrome",
             "port": 9222,
             "webRoot": "${workspaceFolder}\\src\\ui"
+        },
+        {
+            "type": "chrome",
+            "request": "attach",
+            "name": "Attach to Meet",
+            "url": "https://meet.google.com/crg-kzpf-cbh",
+            "port": 9222,
+            "webRoot": "${workspaceFolder}"
         }
     ]
 }

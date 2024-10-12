@@ -59,10 +59,11 @@ const UserDiceRollItemForm = (props) => {
 
     const onBtnRollClick = (event) => {
         const textAreas = document.getElementsByTagName("textarea");
-        if (textAreas && textAreas[0]) {
+        const btns = document.querySelectorAll("button[disabled]:has(> i)");
+        if (textAreas && textAreas[0] && btns && btns[0]) {
             var chatTextInput = textAreas[0];
             chatTextInput.value = `roll ${props.setName}.${label}`;
-            var event = new KeyboardEvent("keydown", {
+            var enterEvent = new KeyboardEvent("keydown", {
                 key: "Enter",
                 code: "Enter",
                 keyCode: 13,
@@ -84,7 +85,11 @@ const UserDiceRollItemForm = (props) => {
                 returnValue: true,
                 shiftKey: false
             });
-            chatTextInput.dispatchEvent(event);
+            chatTextInput.dispatchEvent(enterEvent);
+            
+            var sendBtn = btns[0];
+            sendBtn.removeAttribute("disabled");
+            sendBtn.click();
         }
         else {
             showRollDiceResultOnAPopup();

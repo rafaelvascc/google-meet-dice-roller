@@ -5,6 +5,11 @@ Dice roller extension for RPG players using Google Meet on Google Chrome or Micr
 
 If you're seeing this page, probably the Google Meet Dice Roller extension was just installed or updated... Better read these docs to keep up with changes.
 
+# Privacy Policy
+
+This extension only requires permission to use the browser storage to the use to store their dice sets
+It doesn´t retrieve, share or store you personal data in any way
+
 # The "Browsing History Access" permission is no longer necessary
 
 On the previous version, the "Roll Dice!" button in the user interface used to use the [chrome tabs api](https://developer.chrome.com/docs/extensions/reference/tabs/). By simply requesting access to use this api, the extension was marked as "requiring browser history".
@@ -201,6 +206,12 @@ Se você for do Brasil, pode doar usando o Pix. (If you're from Brazil you can d
 <img src="./docs/pix_qr.png" alt="pix_qr" width="300"/>
 
 Since I'm too lazy to see emails and thank each one that donated, I will leave a great **"Thanks"** here in advance.
+
+# Changelog
+## [1.2.2] - 2022-04-03
+
+### Fixes
+- Fixed "Roll Dice!" button not sending the roll result to the chat window (Google disabled the "send" button...)
 
 # Changelog
 ## [1.2.1] - 2022-04-03
