@@ -208,6 +208,12 @@ Se você for do Brasil, pode doar usando o Pix. (If you're from Brazil you can d
 Since I'm too lazy to see emails and thank each one that donated, I will leave a great **"Thanks"** here in advance.
 
 # Changelog
+## [1.2.3] - 2022-04-03
+
+### Fixes
+- Fixed "Roll Dice!" button not sending the roll result to the chat window... again (thanks jmsfwk)
+
+# Changelog
 ## [1.2.2] - 2022-04-03
 
 ### Fixes

@@ -139,7 +139,7 @@ class DiceRollResultSet {
             if (this.results.length > 1 || this.constant !== 0) {
                 output += this.formatTotalResult(total, this.constant);
             }
-            output += "---------------------------------------------------------------------------"
+            output += "----------------------------------------------------"
         }
         return output;
     }
