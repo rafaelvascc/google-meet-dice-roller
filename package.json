@@ -1,6 +1,6 @@
 {
   "name": "google-meet-dice-roller",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "scripts": {
     "start-ui": "webpack-dev-server --hot --open --mode development --disable-host-check",
     "build-ui": "npx webpack --mode production",
